@@ -179,6 +179,15 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       <span id="order-no-display" class="part-sel" style="display:flex;align-items:center;background:#f5f5f5;color:#999;cursor:default;min-height:26px">確定後に自動発行されます</span>
     </div>
 
+    <div class="sel-group-label">グレード（基本価格）</div>
+    <div class="part-row"><span class="part-nm">グレード</span>
+      <select class="part-sel" id="grade-sel" onchange="setGrade(this)">
+        <option value="">— 選択 —</option>
+        <option value="ゴム・軟式グラブ">ゴム・軟式グラブ（¥44,000）</option>
+        <option value="革・硬式グラブ">革・硬式グラブ（¥55,000）</option>
+      </select>
+    </div>
+
     <div class="sel-group-label">型番・バックスタイル</div>
     <div class="part-row"><span class="part-nm">型番</span>
       <select class="part-sel" id="model-sel" onchange="setModel(this)">
@@ -271,6 +280,11 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">ウエブ形状</span>
       <select class="part-sel" id="web-shape-sel" onchange="setWebShape(this)"></select>
     </div>
+    <div class="part-row" id="sakura-web-cut-row" style="display:none">
+      <span class="part-nm">桜ウエブ 切り抜き</span>
+      <select class="part-sel" id="sakura-web-cut-color" onchange="setSakuraWebCutColor(this)"><option value="">— 選択 —</option></select>
+      <span class="swatch" id="sw-sakura-web-cut"></span>
+    </div>
 
     <!-- ===== 刺繍仕様 ===== -->
     <div class="sel-group-label">刺繍仕様</div>
@@ -326,13 +340,13 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
 
     <div class="sel-group-label">その他</div>
     <div class="part-row"><span class="part-nm">刺繍箇所</span>
-      <input type="text" id="ep-other-place" class="part-sel" placeholder="箇所を記入" oninput="embrOtherPlace=this.value">
+      <input type="text" id="ep-other-place" class="part-sel" placeholder="箇所を記入" oninput="embrOtherPlace=this.value;updatePrice()">
     </div>
     <div class="part-row"><span class="part-nm">刺繍文字</span>
-      <input type="text" id="ep-other-text" class="part-sel" placeholder="例: SAKURA" oninput="embrOtherText=this.value">
+      <input type="text" id="ep-other-text" class="part-sel" placeholder="例: SAKURA" oninput="embrOtherText=this.value;updatePrice()">
     </div>
     <div class="part-row"><span class="part-nm">刺繍カラー</span>
-      <input type="text" id="ep-other-color" class="part-sel" placeholder="カラーを記入" oninput="embrOtherColor=this.value">
+      <input type="text" id="ep-other-color" class="part-sel" placeholder="カラーを記入" oninput="embrOtherColor=this.value;updatePrice()">
     </div>
 
     <div class="sel-group-label">備考</div>
@@ -379,6 +393,19 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
 
     </div><!-- /.diag-card -->
 
+    <!-- 概算お見積り -->
+    <div class="diag-card" id="price-card">
+      <div class="diag-card-title">💰 概算お見積り（税込）</div>
+      <table style="width:100%;font-size:.8em;border-collapse:collapse">
+        <tbody id="price-body"></tbody>
+      </table>
+      <div style="display:flex;justify-content:space-between;align-items:center;border-top:2px solid #7a0000;margin-top:8px;padding-top:8px">
+        <span style="font-size:.85em;font-weight:bold;color:#7a0000">合計（税込）</span>
+        <span id="price-total" style="font-size:1.3em;font-weight:bold;color:#7a0000">¥0</span>
+      </div>
+      <div id="price-note" style="font-size:.68em;color:#7a5500;margin-top:8px;line-height:1.6"></div>
+    </div>
+
     <!-- 選択中のウエブ形状（表示専用） -->
     <div class="diag-card" id="web-shape-card" style="display:none">
       <div class="diag-card-title">🥎 選択中のウエブ</div>
@@ -389,6 +416,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
              style="max-width:240px;width:100%;height:auto;border-radius:8px;border:1px solid #eee;display:none"></canvas>
         <div id="web-shape-name" style="font-size:.82em;font-weight:bold;color:#7a0000;margin-top:8px"></div>
         <div id="web-shape-fee" style="font-size:.78em;font-weight:bold;color:#c01818;margin-top:4px"></div>
+        <div id="web-shape-cutcolor" style="font-size:.78em;color:#444;margin-top:4px"></div>
       </div>
     </div>
 
@@ -534,8 +562,11 @@ const OPT = {}; // ウエブ・指当て・指カバー の あり/なし
 let wtypeVal  = '';
 let orderNo   = '';
 let selectedModel = '';
+let gradeVal  = '';   // 本体グレード（基本価格）
+const GRADE_PRICE = { 'ゴム・軟式グラブ':44000, '革・硬式グラブ':55000 };
 let sakuraBack = 'なし';
 let sakuraBackColor = '';
+let sakuraWebCutColor = '';  // 桜ウエブ「切り抜き」革色
 let thumbUnified = 'なし';   // 親指一体型（親指内側とベルトが一体）
 const SAKURA_BACK_MODELS = new Set(['内野1型','内野2型','内野3型','内野5型','投手1型','外野1型','外野2型']);
 const MODEL_INFO = {
@@ -562,6 +593,12 @@ function setOrderNo(v) {
   if (val) val.textContent = orderNo;
   if (badge) badge.style.display = orderNo ? '' : 'none';
   document.title = orderNo ? `桜グラブ指定表【注文番号 ${orderNo}】| KBスポーツ` : BASE_TITLE;
+}
+
+/* グレード（基本価格） */
+function setGrade(sel) {
+  gradeVal = sel.value;
+  updatePrice();
 }
 
 /* 型番・桜バック：🌸印の対応型番を選んだときだけ桜バックを指定可能にする */
@@ -602,6 +639,7 @@ function renderModelInfo() {
 function setSakuraBack(sel) {
   sakuraBack = sel.value;
   updateSakuraBackColorState();
+  updatePrice();
 }
 
 function setSakuraBackColor(sel) {
@@ -609,6 +647,18 @@ function setSakuraBackColor(sel) {
   const sw = document.getElementById('sw-sakura-back');
   const color = BODY_COLORS.find(c => c.n === sakuraBackColor);
   if (sw) sw.style.background = color ? color.hex : '';
+  updatePrice();
+}
+
+/* 桜ウエブ「切り抜き」革色（桜ウエブ選択時のみ有効） */
+function setSakuraWebCutColor(sel) {
+  sakuraWebCutColor = sel.value;
+  const sw = document.getElementById('sw-sakura-web-cut');
+  const color = BODY_COLORS.find(c => c.n === sakuraWebCutColor);
+  if (sw) sw.style.background = color ? color.hex : '';
+  const cc = document.getElementById('web-shape-cutcolor');
+  if (cc) cc.textContent = `切り抜きカラー: ${sakuraWebCutColor || '未選択'}`;
+  updatePrice();
 }
 
 function updateSakuraBackColorState() {
@@ -747,9 +797,19 @@ function init() {
       sakuraBackColorSel.appendChild(op);
     });
   }
+  const sakuraWebCutColorSel = document.getElementById('sakura-web-cut-color');
+  if (sakuraWebCutColorSel) {
+    BODY_COLORS.forEach(c => {
+      const op = document.createElement('option');
+      op.value = c.n;
+      op.textContent = c.n;
+      sakuraWebCutColorSel.appendChild(op);
+    });
+  }
   buildWebShapeOptions('');   // ウエブ形状プルダウンを初期構築（すべて表示）
   populateEmbrColors();       // 刺繍・丸抜きカラーを構築
   renderSpec();
+  updatePrice();
 }
 
 /* ================================================================
@@ -762,6 +822,7 @@ function setOption(el) {
   const colorSel = el.closest('.part-row').querySelector('.part-sel');
   if (colorSel) colorSel.disabled = (el.value === 'なし');
   renderSpec();
+  updatePrice();
 }
 
 function setPart(sel) {
@@ -833,6 +894,7 @@ function setPart(sel) {
 
   renderSpec();
   rerenderCanvas();
+  updatePrice();
   // ウエブのカラー変更を「選択中のウエブ」カードにも連動
   if (pid === 'web') renderWebShape();
   // 親指一体型のときはベルト（バンド）を親指内側と同色に追従
@@ -893,6 +955,7 @@ function setEmbrPlaceField(place, field, el) {
     const c  = THREAD_COLORS.find(x => x.n === el.value);
     if (sw) sw.style.background = c ? c.hex : '';
   }
+  updatePrice();
 }
 
 // 丸抜きカラー系フィールドのスウォッチ定義
@@ -910,6 +973,7 @@ function setEmbrField(key, el) {
     const c  = m.set.find(x => x.n === el.value);
     if (sw) sw.style.background = c ? c.hex : '';
   }
+  updatePrice();
 }
 
 /* ================================================================
@@ -942,7 +1006,7 @@ const WEB_SHAPES = [
   {file:'ウエブ/スパイラルネットV.jpg',       label:'スパイラルネットV',      cat:'スパイラルネット系', pos:['外']},
   {file:'ウエブ/スパイラルネット1.jpg',       label:'スパイラルネット1',      cat:'スパイラルネット系', pos:['外']},
   {file:'ウエブ/デジタルウエブ投手.jpg',      label:'デジタルウエブ投手',     cat:'デジタル系',         pos:['投','内']},
-  {file:'ウエブ/桜ウエブ.jpg',                label:'桜ウエブ',              cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true},
+  {file:'ウエブ/桜ウエブ.jpg',                label:'桜ウエブ',              cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true, cutColor:true},
   {file:'ウエブ/バスケットA+桜吹雪（桜吹雪ウエブ）.png', label:'桜吹雪ウエブ',   cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true},
 ];
 const WEB_BY_FILE = {};
@@ -983,15 +1047,34 @@ let currentWebShapeFile = '';
 function setWebShape(sel) {
   currentWebShapeFile = sel.value;
   renderWebShape();
+  updatePrice();
+}
+
+/* 桜ウエブ「切り抜き」革色欄：桜ウエブ選択時のみ表示・選択可 */
+function updateSakuraWebCutColorState() {
+  const row = document.getElementById('sakura-web-cut-row');
+  const colorSel = document.getElementById('sakura-web-cut-color');
+  const data = currentWebShapeFile ? WEB_BY_FILE[currentWebShapeFile] : null;
+  const enabled = !!(data && data.cutColor);
+  if (row) row.style.display = enabled ? '' : 'none';
+  if (colorSel) colorSel.disabled = !enabled;
+  if (!enabled && sakuraWebCutColor) {
+    sakuraWebCutColor = '';
+    if (colorSel) colorSel.value = '';
+    const sw = document.getElementById('sw-sakura-web-cut');
+    if (sw) sw.style.background = '';
+  }
 }
 
 /* カード描画：形状＋「ウエブ」カラーを連動して染める */
 function renderWebShape() {
+  updateSakuraWebCutColorState();
   const card = document.getElementById('web-shape-card');
   const img  = document.getElementById('web-shape-img');
   const cv   = document.getElementById('web-shape-canvas');
   const nm   = document.getElementById('web-shape-name');
   const fee  = document.getElementById('web-shape-fee');
+  const cc   = document.getElementById('web-shape-cutcolor');
   const path = currentWebShapeFile;
 
   if (!path) {
@@ -1001,12 +1084,14 @@ function renderWebShape() {
     cv.style.display  = 'none';
     nm.textContent = '';
     fee.textContent = '';
+    if (cc) cc.textContent = '';
     return;
   }
 
   const data = WEB_BY_FILE[path];
   nm.textContent  = data ? data.label : '';
   fee.textContent = (data && data.fee) ? `オプション料金 別途 ¥${data.fee.toLocaleString()}（税込）` : '';
+  if (cc) cc.textContent = (data && data.cutColor) ? `切り抜きカラー: ${sakuraWebCutColor || '未選択'}` : '';
   card.style.display = '';
 
   const enc = encodeURI(path);
@@ -1124,6 +1209,76 @@ function renderSpec() {
 }
 
 /* ================================================================
+   概算お見積り価格
+   ※ 画像の価格表のうち、本ツールで選択できる項目のみ自動算出。
+     さくぼー／スマイリー／芯材厚め変更／指リング／特殊革／#11ウエブ／
+     限定仕様ウェブ／組み合わせセットは選択肢がないため対象外（要相談として注記）。
+================================================================ */
+// 本体カラー3色目以降のカウント対象：革色パーツ全体から「はみ出し」「ヘリ革」を除く
+const BODY_COLOR_EXCLUDE = new Set(['welting', 'binding']);
+const BODY_COLOR_PART_IDS = PARTS.filter(p => p.colorSet === BODY_COLORS && !BODY_COLOR_EXCLUDE.has(p.id)).map(p => p.id);
+
+function calcPrice() {
+  const items = [];
+  let total = 0;
+  const add = (label, amount) => { items.push({label, amount}); total += amount; };
+
+  if (gradeVal && GRADE_PRICE[gradeVal]) add(gradeVal, GRADE_PRICE[gradeVal]);
+
+  // 本体カラー3色目以降（革色として使用した色数−2 が対象）
+  const usedColors = new Set();
+  BODY_COLOR_PART_IDS.forEach(id => { if (S[id]) usedColors.add(S[id]); });
+  if (sakuraBackColor) usedColors.add(sakuraBackColor);
+  if (sakuraWebCutColor) usedColors.add(sakuraWebCutColor);
+  const extraColors = Math.max(0, usedColors.size - 2);
+  if (extraColors > 0) add(`本体カラー${extraColors}色分（3色目以降）`, extraColors * 3300);
+
+  // 桜バックスタイル
+  if (sakuraBack === 'あり') add('桜バックスタイル', 6600);
+
+  // ウエブ形状の追加料金（桜ウエブ・桜吹雪ウエブ等）
+  const wshape = currentWebShapeFile ? WEB_BY_FILE[currentWebShapeFile] : null;
+  if (wshape && wshape.fee) add(wshape.label, wshape.fee);
+
+  // 刺繍（平裏／親指内／小指内）
+  EMBR_PLACE_DEFS.forEach(p => {
+    const e = EMBR_PLACES[p.key];
+    if (!(e.text || e.mono || e.fkType || e.fkColor)) return;
+    add(`刺繍（${p.label}）`, 3300);
+    if (e.fkType || e.fkColor) add(`刺繍フチ／カゲ加工（${p.label}）`, 3300);
+  });
+
+  // 丸抜き
+  if (EMBR.maruBase || EMBR.maruEdge || EMBR.maruNumColor || EMBR.maruNumber) {
+    add('丸抜き', 3300);
+  }
+
+  const notes = [];
+  if (embrOtherPlace || embrOtherText || embrOtherColor) {
+    notes.push('「その他」の刺繍は価格未算入です。KBスポーツへ別途ご相談ください。');
+  }
+  notes.push('さくぼー／スマイリー／芯材厚め変更／指リング／特殊革／#11ウエブ／限定仕様ウェブ／組み合わせセットは本ツールでは算出できません。ご希望の場合はKBスポーツへ別途ご相談ください。');
+
+  return { items, total, notes };
+}
+
+function updatePrice() {
+  const body    = document.getElementById('price-body');
+  const totalEl = document.getElementById('price-total');
+  const noteEl  = document.getElementById('price-note');
+  if (!body || !totalEl) return;
+  const { items, total, notes } = calcPrice();
+  body.innerHTML = items.length
+    ? items.map(it =>
+        `<tr><td style="padding:3px 0;color:#444">${escapeHtml(it.label)}</td>` +
+        `<td style="padding:3px 0;text-align:right;font-weight:bold;color:#111;white-space:nowrap">¥${it.amount.toLocaleString()}</td></tr>`
+      ).join('')
+    : `<tr><td colspan="2" style="padding:3px 0;color:#999">グレードを選択すると表示されます</td></tr>`;
+  totalEl.textContent = `¥${total.toLocaleString()}`;
+  if (noteEl) noteEl.innerHTML = notes.map(n => `※${escapeHtml(n)}`).join('<br>');
+}
+
+/* ================================================================
    ユーティリティ
 ================================================================ */
 function isLight(hex) {
@@ -1149,6 +1304,7 @@ function shadeHex(hex, pct) {
 function buildOrderLines() {
   const lines = ['■ 桜グラブ カラー指定表'];
   lines.push(`受付番号: ${orderNo || '（確定時に自動発行）'}\n`);
+  lines.push(`グレード: ${gradeVal || '未選択'}`);
   lines.push(`型番: ${selectedModel || '未選択'}`);
   lines.push(`桜バック: ${sakuraBack === 'あり' ? `あり / ${sakuraBackColor || '色未選択'}` : 'なし'}`);
   lines.push(`親指一体型: ${thumbUnified === 'あり' ? 'あり（ベルトは親指内側と一体・同色）' : 'なし'}`);
@@ -1168,6 +1324,7 @@ function buildOrderLines() {
   const wshape = currentWebShapeFile ? (WEB_BY_FILE[currentWebShapeFile] || {}) : null;
   if (wshape) {
     lines.push(`ウエブ形状: ${wshape.label}${wshape.fee ? `（オプション +¥${wshape.fee.toLocaleString()}税込）` : ''}`);
+    if (wshape.cutColor) lines.push(`　切り抜きカラー: ${sakuraWebCutColor || '未選択'}`);
   } else {
     lines.push(`ウエブ形状: 未選択`);
   }
@@ -1200,6 +1357,15 @@ function buildOrderLines() {
   lines.push(`番号カラー: ${EMBR.maruNumColor || '未選択'}`);
   lines.push(`番号: ${EMBR.maruNumber || '未記入'}`);
   lines.push(`\n■ 備考\n${embrNote || 'なし'}`);
+  const { items: priceItems, total: priceTotal, notes: priceNotes } = calcPrice();
+  lines.push('\n■ 概算お見積り（税込）');
+  if (priceItems.length) {
+    priceItems.forEach(it => lines.push(`${it.label}: ¥${it.amount.toLocaleString()}`));
+  } else {
+    lines.push('グレード未選択のため算出できません');
+  }
+  lines.push(`合計: ¥${priceTotal.toLocaleString()}`);
+  priceNotes.forEach(n => lines.push(`※${n}`));
   return lines;
 }
 
@@ -1382,8 +1548,8 @@ async function downloadPDF(receiptNo, lines, restoreCode) {
 
 // 現在の全選択内容をオブジェクト化（空の項目は省いて短く）
 function getState() {
-  const st = { v:1, on:orderNo, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
-    tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile,
+  const st = { v:1, on:orderNo, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
+    tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
     ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor], en:embrNote, mr:{} };
   PARTS.forEach(p => { if (S[p.id]) st.S[p.id] = S[p.id]; });
   ['web','fingerpad','fingercover'].forEach(k => { if (OPT[k]) st.O[k] = OPT[k]; });
@@ -1415,6 +1581,8 @@ function applyState(st) {
     const el = document.getElementById(id);
     if (el && val != null) { el.value = val; if (handler) handler(el); }
   };
+  // グレード
+  if (st.gr) setSel('grade-sel', st.gr, setGrade);
   // 型番
   setSel('model-sel', st.m, setModel);
   // 桜バック
@@ -1447,6 +1615,7 @@ function applyState(st) {
   }
   // ウエブ形状
   if (st.ws) setSel('web-shape-sel', st.ws, setWebShape);
+  if (st.wcc) setSel('sakura-web-cut-color', st.wcc, el => { if (!el.disabled) setSakuraWebCutColor(el); });
   // 刺繍箇所
   if (st.ep) EMBR_PLACE_DEFS.forEach(p => {
     const a = st.ep[p.key]; if (!a) return;
@@ -1481,6 +1650,7 @@ function applyState(st) {
   }
   renderSpec();
   rerenderCanvas();
+  updatePrice();
 }
 
 // 入力欄のコードから復元
@@ -1548,6 +1718,10 @@ function clearAll() {
   setOrderNo('');
   const onDisp = document.getElementById('order-no-display');
   if (onDisp) { onDisp.textContent = '確定後に自動発行されます'; onDisp.style.color = '#999'; onDisp.style.background = '#f5f5f5'; }
+  // グレードもクリア
+  gradeVal = '';
+  const gradeSel = document.getElementById('grade-sel');
+  if (gradeSel) gradeSel.value = '';
   // 型番・桜バックもクリア
   selectedModel = '';
   sakuraBack = 'なし';
@@ -1608,6 +1782,7 @@ function clearAll() {
   });
   renderSpec();
   resetCanvas();
+  updatePrice();
 }
 
 /* ================================================================
