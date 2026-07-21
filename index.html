@@ -198,13 +198,17 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
           <option value="内野3型">内野3型 🌸</option><option value="内野4型">内野4型</option>
           <option value="内野5型">内野5型 🌸</option><option value="内野6型-1">内野6型-1</option>
           <option value="内野6型-2">内野6型-2</option>
+          <option value="櫻庭型">櫻庭型</option><option value="UR型">UR型</option><option value="松本型">松本型</option>
         </optgroup>
-        <optgroup label="投手用"><option value="投手1型">投手1型 🌸</option><option value="投手2型">投手2型</option></optgroup>
+        <optgroup label="投手用"><option value="投手1型">投手1型 🌸</option><option value="投手2型">投手2型</option>
+          <option value="河野型">河野型</option>
+        </optgroup>
         <optgroup label="外野手用"><option value="外野1型">外野1型 🌸</option><option value="外野2型">外野2型 🌸</option></optgroup>
       </select>
     </div>
     <div id="model-info" class="model-info" aria-live="polite"></div>
     <div class="model-help">🌸印：桜バックスタイル・親指一体型 対応型番</div>
+    <div class="model-help" id="kawano-help" style="display:none;color:#c01818;font-weight:bold">※指ホールがありません（ベルト・親指内・人差し指内外・中指内は同色になります）</div>
     <div class="part-row"><span class="part-nm">桜バック</span>
       <select class="part-sel" id="sakura-back-sel" onchange="setSakuraBack(this)" disabled>
         <option value="なし">なし</option><option value="あり">あり</option>
@@ -294,6 +298,11 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">刺繍文字</span>
       <input type="text" id="ep-hiraura-text" class="part-sel" placeholder="例: SAKURA" oninput="setEmbrPlaceField('hiraura','text',this)">
     </div>
+    <div class="part-row"><span class="part-nm">書体</span>
+      <select class="part-sel" id="ep-hiraura-font" onchange="setEmbrPlaceField('hiraura','font',this)">
+        <option value="">— 選択 —</option><option value="漢字">漢字</option><option value="活字体">活字体</option><option value="筆記体（ブラッシュ体）">筆記体（ブラッシュ体）</option>
+      </select>
+    </div>
     <div class="part-row"><span class="part-nm">単色</span>
       <select class="part-sel" id="ep-hiraura-mono" onchange="setEmbrPlaceField('hiraura','mono',this)"><option value="">— カラー選択 —</option></select>
       <span class="swatch" id="sw-ep-hiraura-mono"></span>
@@ -310,6 +319,11 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">刺繍文字</span>
       <input type="text" id="ep-thumbin-text" class="part-sel" placeholder="例: SAKURA" oninput="setEmbrPlaceField('thumbin','text',this)">
     </div>
+    <div class="part-row"><span class="part-nm">書体</span>
+      <select class="part-sel" id="ep-thumbin-font" onchange="setEmbrPlaceField('thumbin','font',this)">
+        <option value="">— 選択 —</option><option value="漢字">漢字</option><option value="活字体">活字体</option><option value="筆記体（ブラッシュ体）">筆記体（ブラッシュ体）</option>
+      </select>
+    </div>
     <div class="part-row"><span class="part-nm">単色</span>
       <select class="part-sel" id="ep-thumbin-mono" onchange="setEmbrPlaceField('thumbin','mono',this)"><option value="">— カラー選択 —</option></select>
       <span class="swatch" id="sw-ep-thumbin-mono"></span>
@@ -325,6 +339,11 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="sel-group-label">小指内</div>
     <div class="part-row"><span class="part-nm">刺繍文字</span>
       <input type="text" id="ep-pinkyin-text" class="part-sel" placeholder="例: SAKURA" oninput="setEmbrPlaceField('pinkyin','text',this)">
+    </div>
+    <div class="part-row"><span class="part-nm">書体</span>
+      <select class="part-sel" id="ep-pinkyin-font" onchange="setEmbrPlaceField('pinkyin','font',this)">
+        <option value="">— 選択 —</option><option value="漢字">漢字</option><option value="活字体">活字体</option><option value="筆記体（ブラッシュ体）">筆記体（ブラッシュ体）</option>
+      </select>
     </div>
     <div class="part-row"><span class="part-nm">単色</span>
       <select class="part-sel" id="ep-pinkyin-mono" onchange="setEmbrPlaceField('pinkyin','mono',this)"><option value="">— カラー選択 —</option></select>
@@ -344,6 +363,11 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="part-row"><span class="part-nm">刺繍文字</span>
       <input type="text" id="ep-other-text" class="part-sel" placeholder="例: SAKURA" oninput="embrOtherText=this.value;updatePrice()">
+    </div>
+    <div class="part-row"><span class="part-nm">書体</span>
+      <select class="part-sel" id="ep-other-font" onchange="embrOtherFont=this.value">
+        <option value="">— 選択 —</option><option value="漢字">漢字</option><option value="活字体">活字体</option><option value="筆記体（ブラッシュ体）">筆記体（ブラッシュ体）</option>
+      </select>
     </div>
     <div class="part-row"><span class="part-nm">刺繍カラー</span>
       <input type="text" id="ep-other-color" class="part-sel" placeholder="カラーを記入" oninput="embrOtherColor=this.value;updatePrice()">
@@ -618,7 +642,28 @@ function setModel(sel) {
     if (!available) { tuSel.value = 'なし'; thumbUnified = 'なし'; }
   }
   applyThumbUnified();
+  applyKawanoLink();
   updateSakuraBackColorState();
+}
+
+/* 河野型：指ホールがなく、ベルト・親指内・人差し指内外・中指内が同色になる
+   → 親指内側をマスターにして残り4箇所を追従・選択不可に */
+const KAWANO_LINK_PARTS = ['wrist','f1in','f1out','f2in'];
+function applyKawanoLink() {
+  const isKawano = (selectedModel === '河野型');
+  const help = document.getElementById('kawano-help');
+  if (help) help.style.display = isKawano ? '' : 'none';
+  KAWANO_LINK_PARTS.forEach(pid => {
+    const sel = document.querySelector(`select[data-part="${pid}"]`);
+    if (!sel) return;
+    if (isKawano) {
+      const name = S['thumbIn'] || '';
+      if (sel.value !== name) { sel.value = name; setPart(sel); }
+      sel.disabled = true;
+    } else {
+      sel.disabled = false;
+    }
+  });
 }
 
 function renderModelInfo() {
@@ -902,6 +947,13 @@ function setPart(sel) {
     const wristSel = document.querySelector('select[data-part="wrist"]');
     if (wristSel && wristSel.value !== name) { wristSel.value = name; setPart(wristSel); }
   }
+  // 河野型のときはベルト・人差し指内外・中指内も親指内側と同色に追従
+  if (pid === 'thumbIn' && selectedModel === '河野型') {
+    KAWANO_LINK_PARTS.forEach(fp => {
+      const sel = document.querySelector(`select[data-part="${fp}"]`);
+      if (sel && sel.value !== name) { sel.value = name; setPart(sel); }
+    });
+  }
 }
 
 /* ================================================================
@@ -914,14 +966,15 @@ const EMBR_PLACE_DEFS = [
   {key:'pinkyin', label:'小指内'},
 ];
 const EMBR_PLACES = {
-  hiraura: {text:'', mono:'', fkType:'', fkColor:''},
-  thumbin: {text:'', mono:'', fkType:'', fkColor:''},
-  pinkyin: {text:'', mono:'', fkType:'', fkColor:''},
+  hiraura: {text:'', mono:'', fkType:'', fkColor:'', font:''},
+  thumbin: {text:'', mono:'', fkType:'', fkColor:'', font:''},
+  pinkyin: {text:'', mono:'', fkType:'', fkColor:'', font:''},
 };
 // その他（記入式）・備考
 let embrOtherPlace = '';
 let embrOtherText  = '';
 let embrOtherColor = '';
+let embrOtherFont  = '';
 let embrNote = '';
 // 丸抜き
 const EMBR = { maruBase:'', maruEdge:'', maruNumColor:'', maruNumber:'' };
@@ -1308,6 +1361,7 @@ function buildOrderLines() {
   lines.push(`型番: ${selectedModel || '未選択'}`);
   lines.push(`桜バック: ${sakuraBack === 'あり' ? `あり / ${sakuraBackColor || '色未選択'}` : 'なし'}`);
   lines.push(`親指一体型: ${thumbUnified === 'あり' ? 'あり（ベルトは親指内側と一体・同色）' : 'なし'}`);
+  if (selectedModel === '河野型') lines.push(`※指ホールなし（ベルト・親指内・人差し指内外・中指内は同色）`);
   const OPT_IDS_COPY = ['web','fingerpad','fingercover'];
   PARTS.forEach(p => {
     if (p.id === 'body') return;
@@ -1342,6 +1396,7 @@ function buildOrderLines() {
     const st = EMBR_PLACES[p.key];
     const parts = [];
     if (st.text) parts.push(`文字「${st.text}」`);
+    if (st.font) parts.push(`書体 ${st.font}`);
     if (st.mono) parts.push(`単色 ${st.mono}`);
     if (st.fkType || st.fkColor) parts.push(`${st.fkType || 'フチ/カゲ'} ${st.fkColor || 'カラー未選択'}`);
     lines.push(`${p.label}: ${parts.length ? parts.join('、') : 'なし'}`);
@@ -1349,6 +1404,7 @@ function buildOrderLines() {
   const otherParts = [];
   if (embrOtherPlace) otherParts.push(`箇所 ${embrOtherPlace}`);
   if (embrOtherText)  otherParts.push(`文字「${embrOtherText}」`);
+  if (embrOtherFont)  otherParts.push(`書体 ${embrOtherFont}`);
   if (embrOtherColor) otherParts.push(`カラー ${embrOtherColor}`);
   lines.push(`その他: ${otherParts.length ? otherParts.join('、') : 'なし'}`);
   lines.push('\n■ 丸抜き');
@@ -1550,13 +1606,13 @@ async function downloadPDF(receiptNo, lines, restoreCode) {
 function getState() {
   const st = { v:1, on:orderNo, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
     tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
-    ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor], en:embrNote, mr:{} };
+    ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor, embrOtherFont], en:embrNote, mr:{} };
   PARTS.forEach(p => { if (S[p.id]) st.S[p.id] = S[p.id]; });
   ['web','fingerpad','fingercover'].forEach(k => { if (OPT[k]) st.O[k] = OPT[k]; });
   Object.keys(LOGO_COLOR).forEach(k => { if (LOGO_COLOR[k]) st.lgc[k] = LOGO_COLOR[k]; });
   EMBR_PLACE_DEFS.forEach(p => {
     const e = EMBR_PLACES[p.key];
-    if (e.text || e.mono || e.fkType || e.fkColor) st.ep[p.key] = [e.text, e.mono, e.fkType, e.fkColor];
+    if (e.text || e.mono || e.fkType || e.fkColor || e.font) st.ep[p.key] = [e.text, e.mono, e.fkType, e.fkColor, e.font];
   });
   Object.keys(EMBR).forEach(k => { if (EMBR[k]) st.mr[k] = EMBR[k]; });
   return st;
@@ -1619,7 +1675,7 @@ function applyState(st) {
   // 刺繍箇所
   if (st.ep) EMBR_PLACE_DEFS.forEach(p => {
     const a = st.ep[p.key]; if (!a) return;
-    const map = [['text','text'],['mono','mono'],['fktype','fkType'],['fkcolor','fkColor']];
+    const map = [['text','text'],['mono','mono'],['fktype','fkType'],['fkcolor','fkColor'],['font','font']];
     map.forEach(([dom, fld], i) => {
       const el = document.getElementById(`ep-${p.key}-${dom}`);
       if (el && a[i] != null) { el.value = a[i]; setEmbrPlaceField(p.key, fld, el); }
@@ -1627,10 +1683,10 @@ function applyState(st) {
   });
   // その他・備考
   if (st.eo) {
-    ['ep-other-place','ep-other-text','ep-other-color'].forEach((id,i) => {
+    ['ep-other-place','ep-other-text','ep-other-color','ep-other-font'].forEach((id,i) => {
       const el = document.getElementById(id); if (el) el.value = st.eo[i] || '';
     });
-    embrOtherPlace = st.eo[0] || ''; embrOtherText = st.eo[1] || ''; embrOtherColor = st.eo[2] || '';
+    embrOtherPlace = st.eo[0] || ''; embrOtherText = st.eo[1] || ''; embrOtherColor = st.eo[2] || ''; embrOtherFont = st.eo[3] || '';
   }
   if (st.en != null) { const el = document.getElementById('embr-note'); if (el) el.value = st.en; embrNote = st.en; }
   // 丸抜き
@@ -1740,6 +1796,7 @@ function clearAll() {
   const thumbUnifiedSel = document.getElementById('thumb-unified-sel');
   if (thumbUnifiedSel) { thumbUnifiedSel.value = 'なし'; thumbUnifiedSel.disabled = true; }
   applyThumbUnified();
+  applyKawanoLink();
   // ロゴもクリア
   logoVal = '';
   const lsel = document.getElementById('logo-sel');
@@ -1762,15 +1819,15 @@ function clearAll() {
   EMBR_PLACE_DEFS.forEach(p => {
     const st = EMBR_PLACES[p.key];
     Object.keys(st).forEach(k => st[k] = '');
-    ['text','mono','fktype','fkcolor'].forEach(f => {
+    ['text','mono','fktype','fkcolor','font'].forEach(f => {
       const e = document.getElementById(`ep-${p.key}-${f}`); if (e) e.value = '';
     });
     [`sw-ep-${p.key}-mono`, `sw-ep-${p.key}-fk`].forEach(id => {
       const e = document.getElementById(id); if (e) e.style.background = '';
     });
   });
-  embrOtherPlace = ''; embrOtherText = ''; embrOtherColor = ''; embrNote = '';
-  ['ep-other-place','ep-other-text','ep-other-color','embr-note'].forEach(id => {
+  embrOtherPlace = ''; embrOtherText = ''; embrOtherColor = ''; embrOtherFont = ''; embrNote = '';
+  ['ep-other-place','ep-other-text','ep-other-color','ep-other-font','embr-note'].forEach(id => {
     const e = document.getElementById(id); if (e) e.value = '';
   });
   Object.keys(EMBR).forEach(k => EMBR[k] = '');
