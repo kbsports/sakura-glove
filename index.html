@@ -178,6 +178,13 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">受付番号</span>
       <span id="order-no-display" class="part-sel" style="display:flex;align-items:center;background:#f5f5f5;color:#999;cursor:default;min-height:26px">確定後に自動発行されます</span>
     </div>
+    <div class="part-row"><span class="part-nm">投げ手</span>
+      <select class="part-sel" id="throw-hand-sel" onchange="setThrowHand(this)">
+        <option value="">— 選択 —</option>
+        <option value="右投げ用">右投げ用</option>
+        <option value="左投げ用">左投げ用</option>
+      </select>
+    </div>
 
     <div class="sel-group-label">グレード（基本価格）</div>
     <div class="part-row"><span class="part-nm">グレード</span>
@@ -587,6 +594,7 @@ const S = {};
 const OPT = {}; // ウエブ・指当て・指カバー の あり/なし
 let wtypeVal  = '';
 let orderNo   = '';
+let throwHandVal = '';   // 投げ手（右投げ用／左投げ用）※表記のみ、指定図には反映しない
 let selectedModel = '';
 let gradeVal  = '';   // 本体グレード（基本価格）
 const GRADE_PRICE = { 'ゴム・軟式グラブ':44000, '革・硬式グラブ':55000 };
@@ -619,6 +627,11 @@ function setOrderNo(v) {
   if (val) val.textContent = orderNo;
   if (badge) badge.style.display = orderNo ? '' : 'none';
   document.title = orderNo ? `桜グラブ指定表【注文番号 ${orderNo}】| KBスポーツ` : BASE_TITLE;
+}
+
+/* 投げ手（右投げ用／左投げ用）：表記のみ。指定図の絵は変更しない */
+function setThrowHand(sel) {
+  throwHandVal = sel.value;
 }
 
 /* グレード（基本価格） */
@@ -1359,6 +1372,7 @@ function shadeHex(hex, pct) {
 function buildOrderLines() {
   const lines = ['■ 桜グラブ カラー指定表'];
   lines.push(`受付番号: ${orderNo || '（確定時に自動発行）'}\n`);
+  lines.push(`投げ手: ${throwHandVal || '未選択'}`);
   lines.push(`グレード: ${gradeVal || '未選択'}`);
   lines.push(`型番: ${selectedModel || '未選択'}`);
   lines.push(`桜バック: ${sakuraBack === 'あり' ? `あり / ${sakuraBackColor || '色未選択'}` : 'なし'}`);
@@ -1652,7 +1666,7 @@ function triggerDownload(url, filename) {
 
 // 現在の全選択内容をオブジェクト化（空の項目は省いて短く）
 function getState() {
-  const st = { v:1, on:orderNo, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
+  const st = { v:1, on:orderNo, th:throwHandVal, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
     tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
     ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor, embrOtherFont], en:embrNote, mr:{} };
   PARTS.forEach(p => { if (S[p.id]) st.S[p.id] = S[p.id]; });
@@ -1685,6 +1699,8 @@ function applyState(st) {
     const el = document.getElementById(id);
     if (el && val != null) { el.value = val; if (handler) handler(el); }
   };
+  // 投げ手
+  if (st.th) setSel('throw-hand-sel', st.th, setThrowHand);
   // グレード
   if (st.gr) setSel('grade-sel', st.gr, setGrade);
   // 型番
@@ -1816,6 +1832,10 @@ function clearAll() {
     const colorSel = document.querySelector(`select[data-part="${key}"]`);
     if (colorSel) colorSel.disabled = false;
   });
+  // 投げ手リセット
+  throwHandVal = '';
+  const throwHandSel = document.getElementById('throw-hand-sel');
+  if (throwHandSel) throwHandSel.value = '';
   wtypeVal = '';
   // 受付番号もクリア（別のお客様の番号が残るのを防ぐ）
   orderNo = '';
