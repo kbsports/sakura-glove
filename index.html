@@ -282,6 +282,13 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
         <option value="よことじ">よことじ</option>
       </select>
     </div>
+    <div class="part-row"><span class="part-nm">とじ方向</span>
+      <select class="part-sel" id="toji-dir-sel" onchange="setTojiDir(this)">
+        <option value="">— 選択 —</option>
+        <option value="順とじ">順とじ</option>
+        <option value="逆とじ">逆とじ</option>
+      </select>
+    </div>
     <div class="part-row"><span class="part-nm">ムートン</span>
       <select class="part-sel" id="mouton-sel" onchange="setMouton(this)">
         <option value="">— 選択 —</option>
@@ -605,6 +612,7 @@ let wtypeVal  = '';
 let orderNo   = '';
 let throwHandVal = '';   // 投げ手（右投げ用／左投げ用）※表記のみ、指定図には反映しない
 let coreStitchVal = '';  // 芯トジスタイル（たてとじ／よことじ）※表記のみ
+let tojiDirVal = '';     // とじ方向（順とじ／逆とじ）※表記のみ
 let moutonVal = '';      // ムートン（白／黒）※表記のみ
 let selectedModel = '';
 let gradeVal  = '';   // 本体グレード（基本価格）
@@ -648,6 +656,11 @@ function setThrowHand(sel) {
 /* 芯トジスタイル（たてとじ／よことじ）：表記のみ */
 function setCoreStitch(sel) {
   coreStitchVal = sel.value;
+}
+
+/* とじ方向（順とじ／逆とじ）：表記のみ */
+function setTojiDir(sel) {
+  tojiDirVal = sel.value;
 }
 
 /* ムートン（白／黒）：表記のみ */
@@ -1412,6 +1425,7 @@ function buildOrderLines() {
   });
   lines.push(`\nハミダシ仕様: ${wtypeVal || '未選択'}`);
   lines.push(`芯トジスタイル: ${coreStitchVal || '未選択'}`);
+  lines.push(`とじ方向: ${tojiDirVal || '未選択'}`);
   lines.push(`ムートン: ${moutonVal || '未選択'}`);
   // ウエブ形状
   const wshape = currentWebShapeFile ? (WEB_BY_FILE[currentWebShapeFile] || {}) : null;
@@ -1689,7 +1703,7 @@ function triggerDownload(url, filename) {
 
 // 現在の全選択内容をオブジェクト化（空の項目は省いて短く）
 function getState() {
-  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreStitchVal, mt:moutonVal, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
+  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreStitchVal, td:tojiDirVal, mt:moutonVal, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
     tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
     ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor, embrOtherFont], en:embrNote, mr:{} };
   PARTS.forEach(p => { if (S[p.id]) st.S[p.id] = S[p.id]; });
@@ -1724,8 +1738,9 @@ function applyState(st) {
   };
   // 投げ手
   if (st.th) setSel('throw-hand-sel', st.th, setThrowHand);
-  // 芯トジスタイル・ムートン
+  // 芯トジスタイル・とじ方向・ムートン
   if (st.cs) setSel('core-stitch-sel', st.cs, setCoreStitch);
+  if (st.td) setSel('toji-dir-sel', st.td, setTojiDir);
   if (st.mt) setSel('mouton-sel', st.mt, setMouton);
   // グレード
   if (st.gr) setSel('grade-sel', st.gr, setGrade);
@@ -1862,10 +1877,13 @@ function clearAll() {
   throwHandVal = '';
   const throwHandSel = document.getElementById('throw-hand-sel');
   if (throwHandSel) throwHandSel.value = '';
-  // 芯トジスタイル・ムートンリセット
+  // 芯トジスタイル・とじ方向・ムートンリセット
   coreStitchVal = '';
   const coreStitchSel = document.getElementById('core-stitch-sel');
   if (coreStitchSel) coreStitchSel.value = '';
+  tojiDirVal = '';
+  const tojiDirSel = document.getElementById('toji-dir-sel');
+  if (tojiDirSel) tojiDirSel.value = '';
   moutonVal = '';
   const moutonSel = document.getElementById('mouton-sel');
   if (moutonSel) moutonSel.value = '';
