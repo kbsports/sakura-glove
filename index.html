@@ -205,14 +205,9 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
           <option value="内野3型">内野3型 🌸</option><option value="内野4型">内野4型</option>
           <option value="内野5型">内野5型 🌸</option><option value="内野6型-1">内野6型-1</option>
           <option value="内野6型-2">内野6型-2</option>
-          <option value="櫻庭型">櫻庭型</option><option value="UR型">UR型</option>
         </optgroup>
-        <optgroup label="投手用"><option value="投手1型">投手1型 🌸</option><option value="投手2型">投手2型</option>
-          <option value="河野型">河野型</option>
-        </optgroup>
-        <optgroup label="外野手用"><option value="外野1型">外野1型 🌸</option><option value="外野2型">外野2型 🌸</option>
-          <option value="松本型">松本型</option>
-        </optgroup>
+        <optgroup label="投手用"><option value="投手1型">投手1型 🌸</option><option value="投手2型">投手2型</option></optgroup>
+        <optgroup label="外野手用"><option value="外野1型">外野1型 🌸</option><option value="外野2型">外野2型 🌸</option></optgroup>
       </select>
     </div>
     <div id="model-info" class="model-info" aria-live="polite"></div>
@@ -279,6 +274,20 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       </select>
       <select class="part-sel" data-part="welting" onchange="setPart(this)" disabled><option value="">色選択なし</option></select>
       <span class="swatch" id="sw-welting"></span>
+    </div>
+    <div class="part-row"><span class="part-nm">芯トジスタイル</span>
+      <select class="part-sel" id="core-stitch-sel" onchange="setCoreStitch(this)">
+        <option value="">— 選択 —</option>
+        <option value="たてとじ">たてとじ</option>
+        <option value="よことじ">よことじ</option>
+      </select>
+    </div>
+    <div class="part-row"><span class="part-nm">ムートン</span>
+      <select class="part-sel" id="mouton-sel" onchange="setMouton(this)">
+        <option value="">— 選択 —</option>
+        <option value="白">白</option>
+        <option value="黒">黒</option>
+      </select>
     </div>
 
     <div class="sel-group-label">ウエブ形状</div>
@@ -595,6 +604,8 @@ const OPT = {}; // ウエブ・指当て・指カバー の あり/なし
 let wtypeVal  = '';
 let orderNo   = '';
 let throwHandVal = '';   // 投げ手（右投げ用／左投げ用）※表記のみ、指定図には反映しない
+let coreStitchVal = '';  // 芯トジスタイル（たてとじ／よことじ）※表記のみ
+let moutonVal = '';      // ムートン（白／黒）※表記のみ
 let selectedModel = '';
 let gradeVal  = '';   // 本体グレード（基本価格）
 const GRADE_PRICE = { 'ゴム・軟式グラブ':44000, '革・硬式グラブ':55000 };
@@ -632,6 +643,16 @@ function setOrderNo(v) {
 /* 投げ手（右投げ用／左投げ用）：表記のみ。指定図の絵は変更しない */
 function setThrowHand(sel) {
   throwHandVal = sel.value;
+}
+
+/* 芯トジスタイル（たてとじ／よことじ）：表記のみ */
+function setCoreStitch(sel) {
+  coreStitchVal = sel.value;
+}
+
+/* ムートン（白／黒）：表記のみ */
+function setMouton(sel) {
+  moutonVal = sel.value;
 }
 
 /* グレード（基本価格） */
@@ -1390,6 +1411,8 @@ function buildOrderLines() {
     }
   });
   lines.push(`\nハミダシ仕様: ${wtypeVal || '未選択'}`);
+  lines.push(`芯トジスタイル: ${coreStitchVal || '未選択'}`);
+  lines.push(`ムートン: ${moutonVal || '未選択'}`);
   // ウエブ形状
   const wshape = currentWebShapeFile ? (WEB_BY_FILE[currentWebShapeFile] || {}) : null;
   if (wshape) {
@@ -1666,7 +1689,7 @@ function triggerDownload(url, filename) {
 
 // 現在の全選択内容をオブジェクト化（空の項目は省いて短く）
 function getState() {
-  const st = { v:1, on:orderNo, th:throwHandVal, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
+  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreStitchVal, mt:moutonVal, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
     tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
     ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor, embrOtherFont], en:embrNote, mr:{} };
   PARTS.forEach(p => { if (S[p.id]) st.S[p.id] = S[p.id]; });
@@ -1701,6 +1724,9 @@ function applyState(st) {
   };
   // 投げ手
   if (st.th) setSel('throw-hand-sel', st.th, setThrowHand);
+  // 芯トジスタイル・ムートン
+  if (st.cs) setSel('core-stitch-sel', st.cs, setCoreStitch);
+  if (st.mt) setSel('mouton-sel', st.mt, setMouton);
   // グレード
   if (st.gr) setSel('grade-sel', st.gr, setGrade);
   // 型番
@@ -1836,6 +1862,13 @@ function clearAll() {
   throwHandVal = '';
   const throwHandSel = document.getElementById('throw-hand-sel');
   if (throwHandSel) throwHandSel.value = '';
+  // 芯トジスタイル・ムートンリセット
+  coreStitchVal = '';
+  const coreStitchSel = document.getElementById('core-stitch-sel');
+  if (coreStitchSel) coreStitchSel.value = '';
+  moutonVal = '';
+  const moutonSel = document.getElementById('mouton-sel');
+  if (moutonSel) moutonSel.value = '';
   wtypeVal = '';
   // 受付番号もクリア（別のお客様の番号が残るのを防ぐ）
   orderNo = '';
