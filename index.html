@@ -32,6 +32,11 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
 
 /* ===== RIGHT: 指定図エリア ===== */
 .diag-panel{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
+.pr{display:flex;justify-content:space-between;gap:12px;padding:3px 0;border-bottom:1px dotted #e8e8e8}
+.pr>span:last-child{font-weight:bold;color:#c01818;white-space:nowrap;text-align:right}
+.prn{color:#8a8a8a;font-size:.92em;padding:2px 0 3px 1em;text-indent:-1em;line-height:1.45}
+.pr-h{font-weight:bold;color:#7a0000;border-bottom:2px solid #e5c9c9;padding-bottom:3px;margin:14px 0 6px}
+.pr-g{font-weight:bold;margin:8px 0 2px}
 
 .notice{background:#fff8e1;border-left:4px solid #f5a623;border-radius:0 8px 8px 0;padding:8px 12px;font-size:.78em;color:#7a5500;line-height:1.5}
 
@@ -453,6 +458,57 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
         <span id="price-total" style="font-size:1.3em;font-weight:bold;color:#7a0000">¥0</span>
       </div>
       <div id="price-note" style="font-size:.68em;color:#7a5500;margin-top:8px;line-height:1.6"></div>
+    </div>
+
+    <!-- オーダー価格表・オプション価格表（見るだけ・海外工場） -->
+    <div class="diag-card">
+      <details open>
+        <summary style="cursor:pointer;font-weight:bold;color:#7a0000">💴 オーダー価格表・オプション価格表（税込）</summary>
+        <div style="font-size:.8em;line-height:1.5;margin-top:10px">
+          <div class="pr-h" style="margin-top:0">― オーダー価格表 ―</div>
+          <div class="pr-g" style="margin-top:2px">【スタンダード】</div>
+          <div class="pr"><span>ゴム・軟式グラブ</span><span>¥44,000</span></div>
+          <div class="pr"><span>ゴム・軟式ミット</span><span>¥46,200</span></div>
+          <div class="pr"><span>革・硬式グラブ</span><span>¥55,000</span></div>
+          <div class="pr"><span>革・硬式ミット</span><span>¥60,500</span></div>
+          <div class="pr-g">【ACE】</div>
+          <div class="pr"><span>革・硬式グラブ</span><span>¥60,500</span></div>
+          <div class="pr"><span>革・硬式ミット</span><span>¥66,000</span></div>
+          <div class="pr-g">【TOP】</div>
+          <div class="pr"><span>革・硬式グラブ</span><span>¥66,000</span></div>
+
+          <div class="pr-h">― オプション価格表 ―</div>
+          <div class="pr"><span>本体カラー3色目以降</span><span>¥3,300／1色ごと</span></div>
+          <div class="pr"><span>刺繍</span><span>¥3,300／1箇所</span></div>
+          <div class="prn">※影や縁をつけると +¥3,300 されます</div>
+          <div class="prn">※親指／平型／小指に刺繍できますが、その他の箇所への刺繍はご相談ください</div>
+          <div class="pr"><span>桜ウェブ／桜バックスタイル</span><span>¥6,600</span></div>
+          <div class="prn">※桜バックスタイル可能型番→内野1型・2型・3型・5型・投手1型・外野1型・2型</div>
+          <div class="prn">※桜ウェブはスタンダードのみ対応可能です</div>
+          <div class="pr"><span>限定仕様ウェブ</span><span>¥3,300〜</span></div>
+          <div class="pr"><span>芯材厚めに変更</span><span>¥5,500</span></div>
+          <div class="pr"><span>オリジナル刺繍作成</span><span>¥4,400〜</span></div>
+          <div class="prn">※デザイン修正や変更は2度までで、3度以上は料金が発生します</div>
+          <div class="prn">※3度目から ¥2,200／1度 がかかりますのでご了承ください</div>
+          <div class="pr"><span>さくぼー</span><span>¥4,400（色変更 ¥1,100）</span></div>
+          <div class="pr"><span>桜吹雪</span><span>¥6,600（単色）／色変更1色 ¥1,100</span></div>
+          <div class="pr"><span>スマイリー</span><span>¥4,400（単色）／フチ +¥4,400</span></div>
+          <div class="pr"><span>丸抜き</span><span>¥3,300</span></div>
+          <div class="pr"><span>指リング</span><span>¥13,200</span></div>
+          <div class="pr"><span>特殊革</span><span>¥1,100／1色</span></div>
+          <div class="pr"><span>#11ウエブ</span><span>¥6,600</span></div>
+
+          <div class="pr-h">― 組み合わせセット ―</div>
+          <div class="pr"><span>桜・花びら＋ネーム</span><span>¥8,800／1箇所</span></div>
+          <div class="prn">※単色／ネームは影またはフチ付き</div>
+          <div class="pr"><span>さくぼー or スマイリー＋ネーム</span><span>¥8,800／1箇所</span></div>
+          <div class="prn">※スマイリー・ネームともに影またはフチ付き</div>
+          <div class="pr"><span>ウエブ（バスケットA）に桜＋桜吹雪</span><span>¥8,800／1箇所</span></div>
+          <div class="prn">※2色目から ¥1,100／1色</div>
+          <div class="pr"><span>ウエブへの桜吹雪＋さくぼー</span><span>¥8,800／1箇所</span></div>
+          <div style="color:#7a5500;margin-top:8px">※上記はすべて税込価格です。</div>
+        </div>
+      </details>
     </div>
 
     <!-- 選択中のウエブ形状（表示専用） -->
