@@ -243,8 +243,6 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       <select class="part-sel" id="logo-sel" onchange="setLogo(this)">
         <option value="">— 選択 —</option>
         <option value="1">ロゴ1</option>
-        <option value="2">ロゴ2</option>
-        <option value="3">ロゴ3</option>
       </select>
     </div>
     <div id="logo-color-rows"></div>
@@ -287,7 +285,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">芯トジスタイル</span>
       <select class="part-sel" id="core-stitch-sel" onchange="setCoreStitch(this)">
         <option value="">— 選択 —</option>
-        <option value="たてとじ">たてとじ</option>
+        <option value="たてとじ" id="tate-toji-opt" hidden>たてとじ</option>
         <option value="よことじ">よことじ</option>
       </select>
     </div>
@@ -413,7 +411,8 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       placeholder="ご要望・ご質問などご自由にご記入ください"
       oninput="embrNote=this.value"></textarea>
 
-    <!-- ③ 丸抜き -->
+    <!-- ③ 丸抜き（国内工場は不可のため非表示） -->
+    <div id="maru-group" style="display:none">
     <div class="sel-group-label">丸抜き</div>
     <div class="part-row"><span class="part-nm">土台カラー</span>
       <select class="part-sel" id="maru-base" onchange="setEmbrField('maruBase', this)"><option value="">— 選択 —</option></select>
@@ -429,6 +428,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="part-row"><span class="part-nm">番号</span>
       <input type="text" id="maru-number" class="part-sel" placeholder="例: 10（選択・記入）" oninput="setEmbrField('maruNumber', this)">
+    </div>
     </div>
   </div>
 
@@ -579,7 +579,6 @@ const BODY_COLORS = [
   {n:'ピンク',          hex:'#DE6FAC'},
   {n:'ホワイト',        hex:'#E6E6E6'},
   {n:'グレー',          hex:'#98999C'},
-  {n:'バーガンディ',    hex:'#9B405B'},
   {n:'キャメルB',       hex:'#DFC599'},
 ];
 
@@ -758,6 +757,19 @@ function setModel(sel) {
   applyThumbUnified();
   applyKawanoLink();
   updateSakuraBackColorState();
+  applyTateTojiRule();
+}
+
+/* たてとじ（縦とじ）は投手用（河野型）のみ選択可 */
+function applyTateTojiRule() {
+  const isKawano = (selectedModel === '河野型');
+  const opt = document.getElementById('tate-toji-opt');
+  if (opt) opt.hidden = !isKawano;
+  const csSel = document.getElementById('core-stitch-sel');
+  if (!isKawano && csSel && csSel.value === 'たてとじ') {
+    csSel.value = '';
+    setCoreStitch(csSel);
+  }
 }
 
 /* 河野型：指ホールがなく、ベルト・親指内・人差し指内外・中指内が同色になる
