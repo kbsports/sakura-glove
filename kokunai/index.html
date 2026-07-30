@@ -204,25 +204,23 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">型番</span>
       <select class="part-sel" id="model-sel" onchange="setModel(this)">
         <option value="">— 選択 —</option>
-        <optgroup label="少年用"><option value="少年型">少年型（約27.5cm）</option></optgroup>
+        <optgroup label="少年用"><option value="少年型">少年型（中〜高学年・約27.5cm）</option></optgroup>
         <optgroup label="内野手用">
-          <option value="内野1型">内野1型 🌸</option><option value="内野2型">内野2型 🌸</option>
-          <option value="内野3型">内野3型 🌸</option><option value="内野4型">内野4型</option>
-          <option value="内野5型">内野5型 🌸</option><option value="内野6型-1">内野6型-1</option>
-          <option value="内野6型-2">内野6型-2</option>
-          <option value="櫻庭型">櫻庭型</option><option value="UR型">UR型</option>
+          <option value="UR型">UR型</option>
+          <option value="櫻庭型">櫻庭型</option>
         </optgroup>
-        <optgroup label="投手用"><option value="投手1型">投手1型 🌸</option><option value="投手2型">投手2型</option>
+        <optgroup label="投手用">
           <option value="河野型">河野型</option>
         </optgroup>
-        <optgroup label="外野手用"><option value="外野1型">外野1型 🌸</option><option value="外野2型">外野2型 🌸</option>
+        <optgroup label="外野手用">
           <option value="松本型">松本型</option>
         </optgroup>
       </select>
     </div>
     <div id="model-info" class="model-info" aria-live="polite"></div>
-    <div class="model-help">🌸印：桜バックスタイル・親指一体型 対応型番</div>
+    <div class="model-help" style="display:none">🌸印：桜バックスタイル・親指一体型 対応型番</div>
     <div class="model-help" id="kawano-help" style="display:none;color:#c01818;font-weight:bold">※指ホールがありません（ベルト・親指内・人差し指内外・中指内は同色になります）</div>
+    <div style="display:none">
     <div class="part-row"><span class="part-nm">桜バック</span>
       <select class="part-sel" id="sakura-back-sel" onchange="setSakuraBack(this)" disabled>
         <option value="なし">なし</option><option value="あり">あり</option>
@@ -238,6 +236,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       </select>
     </div>
     <div class="model-help" id="thumb-unified-help" style="display:none">親指一体型＝親指内側とベルトが一体（縫い目なし）。ベルトは親指内側と同色になります。</div>
+    </div>
 
     <div class="sel-group-label">ロゴ</div>
     <div class="part-row"><span class="part-nm">ロゴ</span>
@@ -685,7 +684,7 @@ let sakuraWebCutColor = '';  // 桜ウエブ「切り抜き」革色
 let thumbUnified = 'なし';   // 親指一体型（親指内側とベルトが一体）
 const SAKURA_BACK_MODELS = new Set(['内野1型','内野2型','内野3型','内野5型','投手1型','外野1型','外野2型']);
 const MODEL_INFO = {
-  '少年型':   {type:'少年用', size:'約27.5cm', notes:['ジュニア向けモデル']},
+  '少年型':   {type:'少年用', size:'約27.5cm', notes:['中〜高学年向け']},
   '内野1型': {type:'内野手用', size:'約28.5cm', notes:['ポケット：ウエブ寄り〜正面・狭め','指股あり','ボックス型・掴み','店長オススメ／ソフトボールに使って欲しい型番']},
   '内野2型': {type:'内野手用', size:'約29.2cm', notes:['ポケット：ウエブ寄り〜正面・狭め','指股あり','ボックス型・掴み','店長オススメ／ソフトボールに使って欲しい型番']},
   '内野3型': {type:'内野手用', size:'約29.8cm', notes:['ポケット：ウエブ寄り〜正面・狭め','指股あり','ボックス型・掴み','店長オススメ／ソフトボールに使って欲しい型番']},
