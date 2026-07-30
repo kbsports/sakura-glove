@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>桜グラブ カラー指定表 | KBスポーツ</title>
+<title>桜グラブ カラー指定表（国内工場） | KBスポーツ</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;background:#fdf5f0;color:#1e1e1e;font-size:14px}
@@ -163,7 +163,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
 
 <div class="hd">
   <h1>🌸 桜グラブ カラー指定表</h1>
-  <p>カラーを選択すると指定図・指定表にリアルタイム反映されます</p>
+  <p>【国内工場】カラーを選択すると指定図・指定表にリアルタイム反映されます</p>
 </div>
 
 <div class="wrap">
@@ -204,20 +204,23 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">型番</span>
       <select class="part-sel" id="model-sel" onchange="setModel(this)">
         <option value="">— 選択 —</option>
-        <optgroup label="少年用"><option value="少年型">少年型（約27.5cm）</option></optgroup>
+        <optgroup label="少年用"><option value="少年型">少年型（中〜高学年・約27.5cm）</option></optgroup>
         <optgroup label="内野手用">
-          <option value="内野1型">内野1型 🌸</option><option value="内野2型">内野2型 🌸</option>
-          <option value="内野3型">内野3型 🌸</option><option value="内野4型">内野4型</option>
-          <option value="内野5型">内野5型 🌸</option><option value="内野6型-1">内野6型-1</option>
-          <option value="内野6型-2">内野6型-2</option>
+          <option value="UR型">UR型</option>
+          <option value="櫻庭型">櫻庭型</option>
         </optgroup>
-        <optgroup label="投手用"><option value="投手1型">投手1型 🌸</option><option value="投手2型">投手2型</option></optgroup>
-        <optgroup label="外野手用"><option value="外野1型">外野1型 🌸</option><option value="外野2型">外野2型 🌸</option></optgroup>
+        <optgroup label="投手用">
+          <option value="河野型">河野型</option>
+        </optgroup>
+        <optgroup label="外野手用">
+          <option value="松本型">松本型</option>
+        </optgroup>
       </select>
     </div>
     <div id="model-info" class="model-info" aria-live="polite"></div>
-    <div class="model-help">🌸印：桜バックスタイル・親指一体型 対応型番</div>
+    <div class="model-help" style="display:none">🌸印：桜バックスタイル・親指一体型 対応型番</div>
     <div class="model-help" id="kawano-help" style="display:none;color:#c01818;font-weight:bold">※指ホールがありません（ベルト・親指内・人差し指内外・中指内は同色になります）</div>
+    <div style="display:none">
     <div class="part-row"><span class="part-nm">桜バック</span>
       <select class="part-sel" id="sakura-back-sel" onchange="setSakuraBack(this)" disabled>
         <option value="なし">なし</option><option value="あり">あり</option>
@@ -233,6 +236,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       </select>
     </div>
     <div class="model-help" id="thumb-unified-help" style="display:none">親指一体型＝親指内側とベルトが一体（縫い目なし）。ベルトは親指内側と同色になります。</div>
+    </div>
 
     <div class="sel-group-label">ロゴ</div>
     <div class="part-row"><span class="part-nm">ロゴ</span>
@@ -460,7 +464,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       <div id="price-note" style="font-size:.68em;color:#7a5500;margin-top:8px;line-height:1.6"></div>
     </div>
 
-    <!-- オーダー価格表・オプション価格表（見るだけ・海外工場） -->
+    <!-- オーダー価格表・オプション価格表（見るだけ・国内工場） -->
     <div class="diag-card">
       <details open>
         <summary style="cursor:pointer;font-weight:bold;color:#7a0000">💴 オーダー価格表・オプション価格表（税込）</summary>
@@ -482,33 +486,22 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
           <div class="pr"><span>刺繍</span><span>¥3,300／1箇所</span></div>
           <div class="prn">※影や縁をつけると +¥3,300 されます</div>
           <div class="prn">※親指／平型／小指に刺繍できますが、その他の箇所への刺繍はご相談ください</div>
-          <div class="pr"><span>桜ウェブ／桜バックスタイル</span><span>¥6,600</span></div>
-          <div class="prn">※桜バックスタイル可能型番→内野1型・2型・3型・5型・投手1型・外野1型・2型</div>
-          <div class="prn">※桜ウェブはスタンダードのみ対応可能です</div>
-          <div class="pr"><span>限定仕様ウェブ</span><span>¥3,300〜</span></div>
-          <div class="pr"><span>芯材厚めに変更</span><span>¥5,500</span></div>
           <div class="pr"><span>オリジナル刺繍作成</span><span>¥4,400〜</span></div>
           <div class="prn">※デザイン修正や変更は2度までで、3度以上は料金が発生します</div>
           <div class="prn">※3度目から ¥2,200／1度 がかかりますのでご了承ください</div>
           <div class="pr"><span>さくぼー</span><span>¥4,400（色変更 ¥1,100）</span></div>
           <div class="pr"><span>桜吹雪</span><span>¥6,600（単色）／色変更1色 ¥1,100</span></div>
-          <div class="pr"><span>スマイリー</span><span>¥4,400（単色）／フチ +¥4,400</span></div>
-          <div class="pr"><span>丸抜き</span><span>¥3,300</span></div>
           <div class="pr"><span>指リング</span><span>¥13,200</span></div>
-          <div class="pr"><span>特殊革</span><span>¥1,100／1色</span></div>
           <div class="pr"><span>#11ウエブ</span><span>¥6,600</span></div>
-
-          <div class="pr-h">― 組み合わせセット ―</div>
-          <div class="pr"><span>桜・花びら＋ネーム</span><span>¥8,800／1箇所</span></div>
-          <div class="prn">※単色／ネームは影またはフチ付き</div>
-          <div class="pr"><span>さくぼー or スマイリー＋ネーム</span><span>¥8,800／1箇所</span></div>
-          <div class="prn">※スマイリー・ネームともに影またはフチ付き</div>
-          <div class="pr"><span>ウエブ（バスケットA）に桜＋桜吹雪</span><span>¥8,800／1箇所</span></div>
-          <div class="prn">※2色目から ¥1,100／1色</div>
-          <div class="pr"><span>ウエブへの桜吹雪＋さくぼー</span><span>¥8,800／1箇所</span></div>
           <div style="color:#7a5500;margin-top:8px">※上記はすべて税込価格です。</div>
         </div>
       </details>
+    </div>
+
+    <!-- ウエブ形状 一覧（国内工場・参考） -->
+    <div class="diag-card">
+      <div class="diag-card-title">🥎 ウエブ形状 一覧（番号でお選びください）</div>
+      <img src="桜グラブ国内工場ウエブ.png" alt="ウエブ形状一覧" style="width:100%;height:auto;border-radius:8px;border:1px solid #eee">
     </div>
 
     <!-- 選択中のウエブ形状（表示専用） -->
@@ -569,65 +562,77 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
    カラーデータ
 ================================================================ */
 const BODY_COLORS = [
-  {n:'タン',          hex:'#C89568'},
-  {n:'オレンジ',      hex:'#E86010'},
-  {n:'ブロンド',      hex:'#D4A96A'},
-  {n:'ホワイト',      hex:'#F2EEE0'},
-  {n:'ピンク',        hex:'#FF2299'},
-  {n:'ネイビー',      hex:'#1A2650'},
-  {n:'パープル',      hex:'#6B2D8B'},
-  {n:'レッド',        hex:'#CC1111'},
-  {n:'イエロー',      hex:'#FFB800'},
-  {n:'ロイヤル',      hex:'#1144BB'},
-  {n:'グレー',        hex:'#999999'},
-  {n:'ブラウン',      hex:'#5C3317'},
-  {n:'グリーン',      hex:'#2A5A1A'},
-  {n:'ブラック',      hex:'#111111'},
-  {n:'スカイブルー',  hex:'#5BB5E8'},
-  {n:'マルーン',      hex:'#6B1E2D'},
-  {n:'チェストナット',hex:'#7B4010'},
+  {n:'イエロー',        hex:'#EFAD35'},
+  {n:'レモンイエロー',  hex:'#F2D026'},
+  {n:'コルク',          hex:'#9C6C55'},
+  {n:'ブラウン',        hex:'#815356'},
+  {n:'レッド',          hex:'#C8313A'},
+  {n:'ネイビー',        hex:'#303B4F'},
+  {n:'ブルー',          hex:'#154E83'},
+  {n:'ブラック',        hex:'#231F20'},
+  {n:'オレンジ',        hex:'#F57921'},
+  {n:'レッドオレンジ',  hex:'#EF4D36'},
+  {n:'水色',            hex:'#16A3AB'},
+  {n:'グリーン',        hex:'#38663E'},
+  {n:'青緑',            hex:'#419390'},
+  {n:'パープル',        hex:'#7C53A1'},
+  {n:'ピンク',          hex:'#DE6FAC'},
+  {n:'ホワイト',        hex:'#E6E6E6'},
+  {n:'グレー',          hex:'#98999C'},
+  {n:'バーガンディ',    hex:'#9B405B'},
+  {n:'キャメルB',       hex:'#DFC599'},
 ];
 
 const LACE_COLORS = [
-  {n:'タン',             hex:'#C89568'},
-  {n:'オレンジ',         hex:'#E86010'},
-  {n:'ブロンド',         hex:'#D4A96A'},
-  {n:'ホワイト',         hex:'#F2EEE0'},
-  {n:'ピンク',           hex:'#FF2299'},
-  {n:'ネイビー',         hex:'#1A2650'},
-  {n:'パープル',         hex:'#6B2D8B'},
-  {n:'レッド',           hex:'#CC1111'},
-  {n:'イエロー',         hex:'#FFB800'},
-  {n:'ロイヤル',         hex:'#1144BB'},
-  {n:'グレー',           hex:'#999999'},
-  {n:'ブラウン',         hex:'#5C3317'},
-  {n:'グリーン',         hex:'#2A5A1A'},
-  {n:'ブラック',         hex:'#111111'},
-  {n:'マルーン',         hex:'#6B1E2D'},
-  {n:'ターコイズ',       hex:'#00CED1'},
-  {n:'シアトルグリーン', hex:'#00704A'},
+  {n:'USAタン',        hex:'#C0906B'},
+  {n:'グレー',         hex:'#98999C'},
+  {n:'ホワイト',       hex:'#E6E6E6'},
+  {n:'中白ブラック',   hex:'#2B2B2B'},
+  {n:'ブラック',       hex:'#231F20'},
+  {n:'レッドオレンジ', hex:'#EF4D36'},
+  {n:'オレンジ',       hex:'#F57921'},
+  {n:'イエロー',       hex:'#EFAD35'},
+  {n:'レモンイエロー', hex:'#F2D026'},
+  {n:'コルク',         hex:'#9C6C55'},
+  {n:'ブラウン',       hex:'#815356'},
+  {n:'レッド',         hex:'#C8313A'},
+  {n:'ネイビー',       hex:'#303B4F'},
+  {n:'ブルー',         hex:'#154E83'},
+  {n:'キャメルB',      hex:'#DFC599'},
 ];
 
 const THREAD_COLORS = [
-  {n:'タン',        hex:'#C89568'},
-  {n:'オレンジ',    hex:'#E86010'},
-  {n:'ブロンド',    hex:'#D4A96A'},
-  {n:'ホワイト',    hex:'#F2EEE0'},
-  {n:'ピンク',      hex:'#FF2299'},
-  {n:'ネイビー',    hex:'#1A2650'},
-  {n:'パープル',    hex:'#6B2D8B'},
-  {n:'レッド',      hex:'#CC1111'},
-  {n:'イエロー',    hex:'#FFB800'},
-  {n:'ロイヤル',    hex:'#1144BB'},
-  {n:'グレー',      hex:'#999999'},
-  {n:'ブラウン',    hex:'#5C3317'},
-  {n:'グリーン',    hex:'#2A5A1A'},
-  {n:'ブラック',    hex:'#111111'},
-  {n:'ゴールド',    hex:'#DAA520'},
-  {n:'ボルトグリーン',hex:'#B8FF00'},
-  {n:'マルーン',    hex:'#6B1E2D'},
-  {n:'パウダーブルー',hex:'#B0D8F0'},
-  {n:'シルバー',    hex:'#C0C0C0'},
+  {n:'ゴールド',       hex:'#C9A227'},
+  {n:'シルバー',       hex:'#B8B8B8'},
+  {n:'ライトゴールド', hex:'#D8C56E'},
+  {n:'ライトシルバー', hex:'#DADADA'},
+  {n:'イエロー',       hex:'#EFAD35'},
+  {n:'オレンジ',       hex:'#F57921'},
+  {n:'レッド',         hex:'#C8313A'},
+  {n:'ピンク',         hex:'#DE6FAC'},
+  {n:'パープル',       hex:'#7C53A1'},
+  {n:'グリーン',       hex:'#38663E'},
+  {n:'スカイブルー',   hex:'#5BB5E8'},
+  {n:'ロイヤルブルー', hex:'#1144BB'},
+  {n:'ネイビー',       hex:'#303B4F'},
+  {n:'ブラック',       hex:'#231F20'},
+  {n:'ホワイト',       hex:'#E6E6E6'},
+];
+
+const STITCH_COLORS = [
+  {n:'ブラック',     hex:'#231F20'},
+  {n:'オレンジ',     hex:'#F57921'},
+  {n:'イエロー',     hex:'#EFAD35'},
+  {n:'コルク',       hex:'#9C6C55'},
+  {n:'ピンク',       hex:'#DE6FAC'},
+  {n:'スカイブルー', hex:'#5BB5E8'},
+  {n:'レッド',       hex:'#C8313A'},
+  {n:'ネイビー',     hex:'#303B4F'},
+  {n:'ブルー',       hex:'#154E83'},
+  {n:'ホワイト',     hex:'#E6E6E6'},
+  {n:'グリーン',     hex:'#38663E'},
+  {n:'パープル',     hex:'#7C53A1'},
+  {n:'グレー',       hex:'#98999C'},
 ];
 
 /* ================================================================
@@ -658,7 +663,7 @@ const PARTS = [
   // 紐・ステッチ
   {id:'lace',       label:'紐',           colorSet: LACE_COLORS,   lbId:null,           lvId:null,          tiId:'ti-lace',    tvId:'tv-lace'},
   {id:'welting',    label:'ハミダシ',     colorSet: BODY_COLORS,   lbId:null,           lvId:null,          tiId:'ti-welting', tvId:'tv-welting'},
-  {id:'thread',     label:'ステッチ',     colorSet: THREAD_COLORS, lbId:null,           lvId:null,          tiId:'ti-thread',  tvId:'tv-thread'},
+  {id:'thread',     label:'ステッチ',     colorSet: STITCH_COLORS, lbId:null,           lvId:null,          tiId:'ti-thread',  tvId:'tv-thread'},
 ];
 
 /* STATE */
@@ -679,7 +684,7 @@ let sakuraWebCutColor = '';  // 桜ウエブ「切り抜き」革色
 let thumbUnified = 'なし';   // 親指一体型（親指内側とベルトが一体）
 const SAKURA_BACK_MODELS = new Set(['内野1型','内野2型','内野3型','内野5型','投手1型','外野1型','外野2型']);
 const MODEL_INFO = {
-  '少年型':   {type:'少年用', size:'約27.5cm', notes:['ジュニア向けモデル']},
+  '少年型':   {type:'少年用', size:'約27.5cm', notes:['中〜高学年向け']},
   '内野1型': {type:'内野手用', size:'約28.5cm', notes:['ポケット：ウエブ寄り〜正面・狭め','指股あり','ボックス型・掴み','店長オススメ／ソフトボールに使って欲しい型番']},
   '内野2型': {type:'内野手用', size:'約29.2cm', notes:['ポケット：ウエブ寄り〜正面・狭め','指股あり','ボックス型・掴み','店長オススメ／ソフトボールに使って欲しい型番']},
   '内野3型': {type:'内野手用', size:'約29.8cm', notes:['ポケット：ウエブ寄り〜正面・狭め','指股あり','ボックス型・掴み','店長オススメ／ソフトボールに使って欲しい型番']},
@@ -691,6 +696,10 @@ const MODEL_INFO = {
   '投手2型': {type:'投手用', size:'約31.0cm', notes:['ポケット：ウエブ寄り']},
   '外野1型': {type:'外野手用', size:'約32.5cm', notes:['ポケット：正面・深め','掴み・挟み捕りに近い型','指股あり']},
   '外野2型': {type:'外野手用', size:'約32.5cm', notes:['ポケット：ウエブ寄り・深め','指股なし','店長オススメ','型付けでボックス型に近い型も可能']},
+  'UR型':   {type:'内野手用', size:'約29.2cm', price:'軟式¥44,000／硬式¥55,000', notes:['小指2本入れ・5本入れ可能','がっちり待って捕る人向け']},
+  '櫻庭型': {type:'内野手用', size:'約29.2cm', price:'軟式¥44,000／硬式¥55,000', notes:['シングルプレイヤー向け','小指が少し短い']},
+  '松本型': {type:'外野手用', size:'約32.5cm', price:'軟式¥44,000／硬式¥55,000', notes:['親指と小指がフレア、ポケット深め','小指2本・5本入れ両対応']},
+  '河野型': {type:'投手用',   size:'約31.5cm', price:'軟式¥44,000／硬式¥55,000', notes:['ピッチャー用／指を出さないタイプ']},
 };
 const BASE_TITLE = document.title;
 
@@ -781,7 +790,8 @@ function renderModelInfo() {
     return;
   }
   box.innerHTML = `<strong>${selectedModel}｜${info.type}</strong>` +
-    `<span class="model-size">サイズ：${info.size}</span>` +
+    (info.size  ? `<span class="model-size">サイズ：${info.size}</span>` : '') +
+    (info.price ? `<span class="model-size">価格：${info.price}</span>` : '') +
     `<ul class="model-notes">${info.notes.map(note => `<li>${note}</li>`).join('')}</ul>`;
   box.classList.add('is-visible');
 }
@@ -1139,33 +1149,26 @@ function setEmbrField(key, el) {
    pos: 用途 … 投=投手用 / 内=内野手用 / 外=外野手用
    fee: オプション料金（税込・円）
 ================================================================ */
-const WEB_CAT_ORDER = ['バスケット系','ワンピース系','クロス系','スパイラルネット系','デジタル系','桜オリジナル'];
+const WEB_CAT_ORDER = ['投手用','投手・内野手用','内野手用','内野・外野手用','外野手用'];
 const WEB_SHAPES = [
-  {file:'ウエブ/バスケットA.jpg',            label:'バスケットA',           cat:'バスケット系',       pos:['投']},
-  {file:'ウエブ/バスケットB.jpg',            label:'バスケットB',           cat:'バスケット系',       pos:['投','内']},
-  {file:'ウエブ/バスケットC.jpg',            label:'バスケットC',           cat:'バスケット系',       pos:['投','内']},
-  {file:'ウエブ/バスケットD.jpg',            label:'バスケットD',           cat:'バスケット系',       pos:['投']},
-  {file:'ウエブ/バスケットE.jpg',            label:'バスケットE',           cat:'バスケット系',       pos:['投','内']},
-  {file:'ウエブ/バスケットF.jpg',            label:'バスケットF',           cat:'バスケット系',       pos:['投','内']},
-  {file:'ウエブ/ノーマルワンピース.jpg',      label:'ノーマルワンピース',     cat:'ワンピース系',       pos:['内']},
-  {file:'ウエブ/ワンピースA.jpg',            label:'ワンピースA',           cat:'ワンピース系',       pos:['内']},
-  {file:'ウエブ/ワンピースC.jpg',            label:'ワンピースC',           cat:'ワンピース系',       pos:['内']},
-  {file:'ウエブ/デジタルワンピース.jpg',      label:'デジタルワンピース',     cat:'ワンピース系',       pos:['内']},
-  {file:'ウエブ/クロスA.jpg',                label:'クロスA',               cat:'クロス系',           pos:['内']},
-  {file:'ウエブ/クロスB.jpg',                label:'クロスB',               cat:'クロス系',           pos:['内']},
-  {file:'ウエブ/クロスC.jpg',                label:'クロスC',               cat:'クロス系',           pos:['内']},
-  {file:'ウエブ/クロス1.jpg',                label:'クロス1',               cat:'クロス系',           pos:['内']},
-  {file:'ウエブ/クロス2.jpg',                label:'クロス2',               cat:'クロス系',           pos:['内']},
-  {file:'ウエブ/クロスD.jpg',                label:'クロスD',               cat:'クロス系',           pos:['外']},
-  {file:'ウエブ/スパイラルネットA.jpg',       label:'スパイラルネットA',      cat:'スパイラルネット系', pos:['外']},
-  {file:'ウエブ/スパイラルネットB.jpg',       label:'スパイラルネットB',      cat:'スパイラルネット系', pos:['外']},
-  {file:'ウエブ/スパイラルネットC.jpg',       label:'スパイラルネットC',      cat:'スパイラルネット系', pos:['外']},
-  {file:'ウエブ/スパイラルネットD.jpg',       label:'スパイラルネットD',      cat:'スパイラルネット系', pos:['外']},
-  {file:'ウエブ/スパイラルネットV.jpg',       label:'スパイラルネットV',      cat:'スパイラルネット系', pos:['外']},
-  {file:'ウエブ/スパイラルネット1.jpg',       label:'スパイラルネット1',      cat:'スパイラルネット系', pos:['外']},
-  {file:'ウエブ/デジタルウエブ投手.jpg',      label:'デジタルウエブ投手',     cat:'デジタル系',         pos:['投','内']},
-  {file:'ウエブ/桜ウエブ.jpg',                label:'桜ウエブ',              cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true, cutColor:true},
-  {file:'ウエブ/バスケットA+桜吹雪（桜吹雪ウエブ）.png', label:'桜吹雪ウエブ',   cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true},
+  {file:'投手用1', label:'投手用1', cat:'投手用', pos:['投']},
+  {file:'投手用2', label:'投手用2', cat:'投手用', pos:['投']},
+  {file:'投手・内野手用1', label:'投手・内野手用1', cat:'投手・内野手用', pos:['投','内']},
+  {file:'投手・内野手用2', label:'投手・内野手用2', cat:'投手・内野手用', pos:['投','内']},
+  {file:'内野手用1', label:'内野手用1', cat:'内野手用', pos:['内']},
+  {file:'内野手用2', label:'内野手用2', cat:'内野手用', pos:['内']},
+  {file:'内野手用3', label:'内野手用3', cat:'内野手用', pos:['内']},
+  {file:'内野手用4', label:'内野手用4', cat:'内野手用', pos:['内']},
+  {file:'内野手用5', label:'内野手用5', cat:'内野手用', pos:['内']},
+  {file:'内野手用6', label:'内野手用6', cat:'内野手用', pos:['内']},
+  {file:'内野手用7', label:'内野手用7', cat:'内野手用', pos:['内']},
+  {file:'内野・外野手用1', label:'内野・外野手用1', cat:'内野・外野手用', pos:['内','外']},
+  {file:'内野・外野手用2', label:'内野・外野手用2', cat:'内野・外野手用', pos:['内','外']},
+  {file:'内野・外野手用3', label:'内野・外野手用3', cat:'内野・外野手用', pos:['内','外']},
+  {file:'内野・外野手用4', label:'内野・外野手用4', cat:'内野・外野手用', pos:['内','外']},
+  {file:'内野・外野手用5', label:'内野・外野手用5', cat:'内野・外野手用', pos:['内','外']},
+  {file:'外野手用1', label:'外野手用1', cat:'外野手用', pos:['外']},
+  {file:'外野手用2', label:'外野手用2', cat:'外野手用', pos:['外']},
 ];
 const WEB_BY_FILE = {};
 WEB_SHAPES.forEach(w => { WEB_BY_FILE[w.file] = w; });
@@ -1224,7 +1227,7 @@ function updateSakuraWebCutColorState() {
   }
 }
 
-/* カード描画：形状＋「ウエブ」カラーを連動して染める */
+/* カード描画：形状名を表示（国内工場は個別画像なし・一覧表を別途参照） */
 function renderWebShape() {
   updateSakuraWebCutColorState();
   const card = document.getElementById('web-shape-card');
@@ -1234,48 +1237,20 @@ function renderWebShape() {
   const fee  = document.getElementById('web-shape-fee');
   const cc   = document.getElementById('web-shape-cutcolor');
   const path = currentWebShapeFile;
-
+  if (img) { img.removeAttribute('src'); img.style.display = 'none'; }
+  if (cv) cv.style.display = 'none';
   if (!path) {
-    card.style.display = 'none';
-    img.removeAttribute('src');
-    img.style.display = '';
-    cv.style.display  = 'none';
-    nm.textContent = '';
-    fee.textContent = '';
+    if (card) card.style.display = 'none';
+    if (nm) nm.textContent = '';
+    if (fee) fee.textContent = '';
     if (cc) cc.textContent = '';
     return;
   }
-
   const data = WEB_BY_FILE[path];
-  nm.textContent  = data ? data.label : '';
-  fee.textContent = (data && data.fee) ? `オプション料金 別途 ¥${data.fee.toLocaleString()}（税込）` : '';
+  if (nm) nm.textContent = data ? data.label : '';
+  if (fee) fee.textContent = (data && data.fee) ? `オプション料金 別途 ¥${data.fee.toLocaleString()}（税込）` : '';
   if (cc) cc.textContent = (data && data.cutColor) ? `切り抜きカラー: ${sakuraWebCutColor || '未選択'}` : '';
-  card.style.display = '';
-
-  const enc = encodeURI(path);
-  const colorName = S['web'] || '';
-  const colorObj  = colorName ? BODY_COLORS.find(c => c.n === colorName) : null;
-
-  const apply = () => {
-    // 桜オリジナル（noTint）や色未選択時は原画をそのまま表示
-    if (!colorObj || (data && data.noTint)) {
-      img.style.display = '';
-      cv.style.display  = 'none';
-      return;
-    }
-    const ok = tintWebImage(img, cv, colorObj.hex);
-    if (ok) { img.style.display = 'none'; cv.style.display = ''; }
-    else    { img.style.display = '';     cv.style.display = 'none'; } // file://等でgetImageData不可→原画
-  };
-
-  if (img.getAttribute('src') !== enc) {
-    img.onload = () => { img.onload = null; apply(); };
-    img.src = enc;
-  } else if (img.complete && img.naturalWidth) {
-    apply();
-  } else {
-    img.onload = () => { img.onload = null; apply(); };
-  }
+  if (card) card.style.display = '';
 }
 
 /* 赤いカタログ画像を選択色へ置換（赤い革部分のみ抽出＝白背景・ラベル文字は透過） */
@@ -1462,6 +1437,7 @@ function shadeHex(hex, pct) {
 function buildOrderLines() {
   const lines = ['■ 桜グラブ カラー指定表'];
   lines.push(`受付番号: ${orderNo || '（確定時に自動発行）'}\n`);
+  lines.push('工場: 国内工場');
   lines.push(`投げ手: ${throwHandVal || '未選択'}`);
   lines.push(`グレード: ${gradeVal || '未選択'}`);
   lines.push(`型番: ${selectedModel || '未選択'}`);
@@ -1614,12 +1590,13 @@ async function submitOrder() {
       method: 'POST',
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        工場: '国内工場',
         受付番号: receiptNo,
         型番: selectedModel,
         注文内容: lines.join('\n'),
         配色復元リンク: restoreUrl,
         配色復元コード: restoreCode,
-        _subject: `【桜グラブ注文】受付番号 ${receiptNo}`
+        _subject: `【桜グラブ注文・国内工場】受付番号 ${receiptNo}`
       })
     });
     sent = res.ok;
@@ -2225,7 +2202,7 @@ function drawGlove() {
   // ステッチ（縫い目）：破線を選択色で表示（色選択時のみ）
   const sname = S['thread'];
   if (sname && _stitchImg && _stitchImg.complete && _stitchImg.naturalWidth) {
-    const sc = THREAD_COLORS.find(c => c.n === sname);
+    const sc = STITCH_COLORS.find(c => c.n === sname);
     if (sc) {
       if (!_stitchTmp) {
         _stitchTmp = document.createElement('canvas');
