@@ -282,9 +282,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="part-row"><span class="part-nm">芯トジスタイル</span>
       <select class="part-sel" id="core-stitch-sel" onchange="setCoreStitch(this)">
-        <option value="">— 選択 —</option>
-        <option value="たてとじ">たてとじ</option>
-        <option value="よことじ">よことじ</option>
+        <option value="ヨコトジダブル" selected>ヨコトジダブル</option>
       </select>
     </div>
     <div class="part-row"><span class="part-nm">とじ方向</span>
@@ -296,9 +294,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="part-row"><span class="part-nm">ムートン</span>
       <select class="part-sel" id="mouton-sel" onchange="setMouton(this)">
-        <option value="">— 選択 —</option>
-        <option value="白">白</option>
-        <option value="黒">黒</option>
+        <option value="白" selected>白</option>
       </select>
     </div>
 
@@ -667,9 +663,9 @@ const OPT = {}; // ウエブ・指当て・指カバー の あり/なし
 let wtypeVal  = '';
 let orderNo   = '';
 let throwHandVal = '';   // 投げ手（右投げ用／左投げ用）※表記のみ、指定図には反映しない
-let coreStitchVal = '';  // 芯トジスタイル（たてとじ／よことじ）※表記のみ
+let coreStitchVal = 'ヨコトジダブル';  // 芯トジスタイル（海外工場は常にヨコトジダブル固定）※表記のみ
 let tojiDirVal = '';     // とじ方向（順とじ／逆とじ）※表記のみ
-let moutonVal = '';      // ムートン（白／黒）※表記のみ
+let moutonVal = '白';    // ムートン（海外工場は常に白固定）※表記のみ
 let selectedModel = '';
 let gradeVal  = '';   // 本体グレード（基本価格）
 const GRADE_PRICE = { 'ゴム・軟式グラブ':44000, '革・硬式グラブ':55000 };
@@ -709,7 +705,7 @@ function setThrowHand(sel) {
   throwHandVal = sel.value;
 }
 
-/* 芯トジスタイル（たてとじ／よことじ）：表記のみ */
+/* 芯トジスタイル（海外工場は常にヨコトジダブル固定）：表記のみ */
 function setCoreStitch(sel) {
   coreStitchVal = sel.value;
 }
@@ -719,7 +715,7 @@ function setTojiDir(sel) {
   tojiDirVal = sel.value;
 }
 
-/* ムートン（白／黒）：表記のみ */
+/* ムートン（海外工場は常に白固定）：表記のみ */
 function setMouton(sel) {
   moutonVal = sel.value;
 }
@@ -1933,16 +1929,16 @@ function clearAll() {
   throwHandVal = '';
   const throwHandSel = document.getElementById('throw-hand-sel');
   if (throwHandSel) throwHandSel.value = '';
-  // 芯トジスタイル・とじ方向・ムートンリセット
-  coreStitchVal = '';
+  // 芯トジスタイル・とじ方向・ムートンリセット（芯トジ・ムートンは固定値なので既定値に戻す）
+  coreStitchVal = 'ヨコトジダブル';
   const coreStitchSel = document.getElementById('core-stitch-sel');
-  if (coreStitchSel) coreStitchSel.value = '';
+  if (coreStitchSel) coreStitchSel.value = 'ヨコトジダブル';
   tojiDirVal = '';
   const tojiDirSel = document.getElementById('toji-dir-sel');
   if (tojiDirSel) tojiDirSel.value = '';
-  moutonVal = '';
+  moutonVal = '白';
   const moutonSel = document.getElementById('mouton-sel');
-  if (moutonSel) moutonSel.value = '';
+  if (moutonSel) moutonSel.value = '白';
   wtypeVal = '';
   // 受付番号もクリア（別のお客様の番号が残るのを防ぐ）
   orderNo = '';
