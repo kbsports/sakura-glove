@@ -179,6 +179,21 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="model-help">受付メール／PDFに記載の復元コードを貼り付けると、その配色が再現されます。</div>
 
+    <div class="sel-group-label">お客様情報</div>
+    <div class="part-row"><span class="part-nm">氏名</span>
+      <input type="text" class="part-sel" id="cust-name" oninput="setCust()" placeholder="例）桜井 太郎" autocomplete="name">
+    </div>
+    <div class="part-row"><span class="part-nm">郵便番号</span>
+      <input type="text" class="part-sel" id="cust-zip" oninput="setCust()" placeholder="例）123-4567" inputmode="numeric" autocomplete="postal-code">
+    </div>
+    <div class="part-row"><span class="part-nm">住所</span>
+      <input type="text" class="part-sel" id="cust-addr" oninput="setCust()" placeholder="例）東京都〇〇区〇〇1-2-3 〇〇マンション101" autocomplete="street-address">
+    </div>
+    <div class="part-row"><span class="part-nm">電話番号</span>
+      <input type="text" class="part-sel" id="cust-tel" oninput="setCust()" placeholder="例）090-1234-5678" inputmode="tel" autocomplete="tel">
+    </div>
+    <div class="model-help">ご注文の確定とお届けに必要です。お客様情報は<b>復元コードには含まれません</b>ので、コードやリンクを他の方に渡しても個人情報は伝わりません。</div>
+
     <div class="sel-group-label">注文情報</div>
     <div class="part-row"><span class="part-nm">受付番号</span>
       <span id="order-no-display" class="part-sel" style="display:flex;align-items:center;background:#f5f5f5;color:#999;cursor:default;min-height:26px">確定後に自動発行されます</span>
@@ -662,6 +677,8 @@ const S = {};
 const OPT = {}; // ウエブ・指当て・指カバー の あり/なし
 let wtypeVal  = '';
 let orderNo   = '';
+// お客様情報（注文送信・PDF控えにのみ使用。復元コードには含めない）
+let custName = '', custZip = '', custAddr = '', custTel = '';
 let throwHandVal = '';   // 投げ手（右投げ用／左投げ用）※表記のみ、指定図には反映しない
 let coreStitchVal = 'ヨコトジダブル';  // 芯トジスタイル（海外工場は常にヨコトジダブル固定）※表記のみ
 let tojiDirVal = '';     // とじ方向（順とじ／逆とじ）※表記のみ
@@ -698,6 +715,15 @@ function setOrderNo(v) {
   if (val) val.textContent = orderNo;
   if (badge) badge.style.display = orderNo ? '' : 'none';
   document.title = orderNo ? `桜グラブ指定表【注文番号 ${orderNo}】| KBスポーツ` : BASE_TITLE;
+}
+
+/* お客様情報：入力のたびに変数へ取り込む */
+function setCust() {
+  const v = id => (document.getElementById(id)?.value || '').trim();
+  custName = v('cust-name');
+  custZip  = v('cust-zip');
+  custAddr = v('cust-addr');
+  custTel  = v('cust-tel');
 }
 
 /* 投げ手（右投げ用／左投げ用）：表記のみ。指定図の絵は変更しない */
@@ -1458,6 +1484,12 @@ function shadeHex(hex, pct) {
 function buildOrderLines() {
   const lines = ['■ 桜グラブ カラー指定表'];
   lines.push(`受付番号: ${orderNo || '（確定時に自動発行）'}\n`);
+  lines.push('■ お客様情報');
+  lines.push(`氏名: ${custName || '未入力'}`);
+  lines.push(`郵便番号: ${custZip || '未入力'}`);
+  lines.push(`住所: ${custAddr || '未入力'}`);
+  lines.push(`電話番号: ${custTel || '未入力'}`);
+  lines.push('');
   lines.push(`投げ手: ${throwHandVal || '未選択'}`);
   lines.push(`グレード: ${gradeVal || '未選択'}`);
   lines.push(`型番: ${selectedModel || '未選択'}`);
@@ -1566,6 +1598,17 @@ function escapeHtml(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&
 // 最終確認モーダルを開く（毎回モーダル内容を組み直して古い状態を残さない）
 function openConfirm() {
   if (!selectedModel) { alert('型番を選択してください。'); return; }
+  setCust();
+  const missing = [];
+  if (!custName) missing.push('氏名');
+  if (!custZip)  missing.push('郵便番号');
+  if (!custAddr) missing.push('住所');
+  if (!custTel)  missing.push('電話番号');
+  if (missing.length) {
+    alert('お客様情報の' + missing.join('・') + 'を入力してください。');
+    document.getElementById('cust-name')?.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
   const modal = document.querySelector('#confirm-ov .modal');
   modal.innerHTML =
     '<div class="modal-hd"><h2>🌸 ご注文内容の最終確認</h2>' +
@@ -1611,6 +1654,10 @@ async function submitOrder() {
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({
         受付番号: receiptNo,
+        氏名: custName,
+        郵便番号: custZip,
+        住所: custAddr,
+        電話番号: custTel,
         型番: selectedModel,
         注文内容: lines.join('\n'),
         配色復元リンク: restoreUrl,
@@ -1940,6 +1987,12 @@ function clearAll() {
   const moutonSel = document.getElementById('mouton-sel');
   if (moutonSel) moutonSel.value = '白';
   wtypeVal = '';
+  // お客様情報もクリア（別のお客様の情報が残るのを防ぐ）
+  custName = custZip = custAddr = custTel = '';
+  ['cust-name','cust-zip','cust-addr','cust-tel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
   // 受付番号もクリア（別のお客様の番号が残るのを防ぐ）
   orderNo = '';
   setOrderNo('');
