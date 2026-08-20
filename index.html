@@ -939,36 +939,98 @@ function loadLogoParts(logoId) {
 }
 
 /* 選択色でロゴを塗り分けてキャンバスへ描く */
+/* ロゴのPNGは周囲に余白があるので、実際に見えている範囲を持っておく。
+   ベルト部へ置くときはこの範囲を基準にする（余白ぶん小さく見えるのを防ぐ） */
+const LOGO_TRIM = {
+  '1': {box:[48,126,673,504], w:625, h:378, aspect:1.6534},
+  '2': {box:[159,199,1327,901], w:1168, h:702, aspect:1.6638},
+  '3': {box:[61,41,1700,860], w:1639, h:819, aspect:2.0012},
+};
+
+/* 指定図のベルト部へロゴを置く位置。線画のベルト領域を実測して決めた値。
+   cx,cy = 中心（画像に対する比）／w = 画像幅に対するロゴ幅の比／rot = 傾き（度） */
+const LOGO_PLACE = {
+  '1': {cx:0.3967, cy:0.8706, w:0.1938, rot:1.88},
+  '2': {cx:0.3967, cy:0.8706, w:0.195, rot:1.88},
+  '3': {cx:0.3967, cy:0.8706, w:0.2345, rot:1.88},
+};
+
+let _logoTmp = null, _logoSprite = null;
+
+/* 選択色で塗ったロゴを1枚のキャンバスにまとめて返す。
+   ロゴカードとベルト部のロゴが同じものを使うので、色が食い違うことがない。
+   色未選択のパーツは元の黒のまま。 */
+function buildLogoSprite(logoId) {
+  const list = _logoImgCache[logoId];
+  if (!list || !list.length || !list[0].img) return null;
+  const w = list[0].img.naturalWidth, h = list[0].img.naturalHeight;
+  if (!_logoSprite) _logoSprite = document.createElement('canvas');
+  _logoSprite.width = w; _logoSprite.height = h;
+  const sc = _logoSprite.getContext('2d');
+  sc.clearRect(0, 0, w, h);
+  if (!_logoTmp) _logoTmp = document.createElement('canvas');
+  _logoTmp.width = w; _logoTmp.height = h;
+  const tc = _logoTmp.getContext('2d');
+  list.forEach(p => {
+    if (!p.img) return;
+    const name = LOGO_COLOR[p.key];
+    const c = name ? LOGO_COLOR_SET.find(x => x.n === name) : null;
+    tc.clearRect(0, 0, w, h);
+    tc.globalCompositeOperation = 'source-over';
+    tc.drawImage(p.img, 0, 0);
+    if (c) {
+      tc.globalCompositeOperation = 'source-in';   // 形だけ選択色で塗る
+      tc.fillStyle = c.hex;
+      tc.fillRect(0, 0, w, h);
+      tc.globalCompositeOperation = 'source-over';
+    }
+    sc.drawImage(_logoTmp, 0, 0);
+  });
+  return _logoSprite;
+}
+
+/* 選択色でロゴを塗り分けてロゴカードへ描く */
 function drawLogoCanvas() {
   const cv = document.getElementById('logo-canvas');
   if (!cv || !logoVal) return;
-  loadLogoParts(logoVal).then(list => {
-    if (!list.length || !list[0].img) return;
-    const w = list[0].img.naturalWidth, h = list[0].img.naturalHeight;
-    cv.width = w; cv.height = h;
+  loadLogoParts(logoVal).then(() => {
+    const sp = buildLogoSprite(logoVal);
+    if (!sp) return;
+    cv.width = sp.width; cv.height = sp.height;
     const ctx = cv.getContext('2d');
-    ctx.clearRect(0, 0, w, h);
-    if (!_logoTmp) { _logoTmp = document.createElement('canvas'); }
-    _logoTmp.width = w; _logoTmp.height = h;
-    const tc = _logoTmp.getContext('2d');
-    list.forEach(p => {
-      if (!p.img) return;
-      const name = LOGO_COLOR[p.key];
-      const c = name ? LOGO_COLOR_SET.find(x => x.n === name) : null;
-      tc.clearRect(0, 0, w, h);
-      tc.globalCompositeOperation = 'source-over';
-      tc.drawImage(p.img, 0, 0);
-      if (c) {
-        tc.globalCompositeOperation = 'source-in';   // 形だけ選択色で塗る
-        tc.fillStyle = c.hex;
-        tc.fillRect(0, 0, w, h);
-        tc.globalCompositeOperation = 'source-over';
-      }
-      ctx.drawImage(_logoTmp, 0, 0);   // 未選択のパーツは元の黒のまま
-    });
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(sp, 0, 0);
+    _redrawDiagram();   // 指定図のベルト部のロゴも同時に更新
   });
 }
-let _logoTmp = null;
+
+/* 指定図のベルト部へロゴを重ねる。drawGlove の最後から呼ばれる */
+function drawLogoOnDiagram() {
+  if (!logoVal || !_displayCtx || !_imgW) return;
+  const pl = LOGO_PLACE[logoVal], tr = LOGO_TRIM[logoVal];
+  if (!pl || !tr) return;
+  if (!_logoImgCache[logoVal]) {
+    // まだパーツ画像を読んでいない。読み終わってから描き直す
+    loadLogoParts(logoVal).then(() => _redrawDiagram());
+    return;
+  }
+  const sp = buildLogoSprite(logoVal);
+  if (!sp) return;
+  const dw = pl.w * _imgW, dh = dw / tr.aspect;
+  _displayCtx.save();
+  _displayCtx.globalCompositeOperation = 'source-over';
+  _displayCtx.translate(pl.cx * _imgW, pl.cy * _imgH);
+  _displayCtx.rotate(pl.rot * Math.PI / 180);
+  // 余白を切り落とし、見えている範囲の中心をベルトの中心に合わせる
+  _displayCtx.drawImage(sp, tr.box[0], tr.box[1], tr.w, tr.h, -dw / 2, -dh / 2, dw, dh);
+  _displayCtx.restore();
+}
+
+/* 指定図を描き直す（グラブとミットで関数名が違うため吸収する） */
+function _redrawDiagram() {
+  if (typeof drawGlove === 'function') drawGlove();
+  else if (typeof drawMitt === 'function') drawMitt();
+}
 
 
 function setLogo(sel) {
@@ -2653,6 +2715,9 @@ function drawGlove() {
   _displayCtx.globalCompositeOperation = 'source-over';
 
   drawSakuraZoom();   // 拡大カードも一緒に描き直す
+  // ベルト部のロゴ（ロゴカードとまったく同じ塗りを重ねる）
+  drawLogoOnDiagram();
+
 }
 
 // シェイプモード用 ゾーン定義（flood fill が使えない場合の近似塗り）
