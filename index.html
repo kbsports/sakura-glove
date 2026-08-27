@@ -242,6 +242,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       <select class="part-sel" id="sakura-back-color" onchange="setSakuraBackColor(this)" disabled><option value="">色選択なし</option></select>
       <span class="swatch" id="sw-sakura-back"></span>
     </div>
+    <div class="model-help" id="sakura-back-lock-help" style="display:none;color:#c01818;font-weight:bold">※親指一体型を選んでいる間は桜バックスタイルを承れません（桜バックは「なし」に戻ります）</div>
     <div class="part-row"><span class="part-nm">親指一体型</span>
       <select class="part-sel" id="thumb-unified-sel" onchange="setThumbUnified(this)" disabled>
         <option value="なし">なし</option><option value="あり">あり</option>
@@ -775,12 +776,7 @@ function setModel(sel) {
   selectedModel = sel.value;
   renderModelInfo();
   const available = SAKURA_BACK_MODELS.has(selectedModel);
-  const backSel = document.getElementById('sakura-back-sel');
-  if (backSel) {
-    backSel.disabled = !available;
-    if (!available) { backSel.value = 'なし'; sakuraBack = 'なし'; }
-  }
-  // 親指一体型も🌸型番だけ選択可
+  // 親指一体型も🌸型番だけ選択可（桜バックの可否がこれに従うので先に決める）
   const tuSel = document.getElementById('thumb-unified-sel');
   if (tuSel) {
     tuSel.disabled = !available;
@@ -788,7 +784,7 @@ function setModel(sel) {
   }
   applyThumbUnified();
   applyKawanoLink();
-  updateSakuraBackColorState();
+  updateSakuraBackState();
 }
 
 /* 河野型：指ホールがなく、ベルト・親指内・人差し指内外・中指内が同色になる
@@ -856,7 +852,8 @@ function setSakuraWebCutColor(sel) {
 
 function updateSakuraBackColorState() {
   const colorSel = document.getElementById('sakura-back-color');
-  const enabled = SAKURA_BACK_MODELS.has(selectedModel) && sakuraBack === 'あり';
+  const enabled = SAKURA_BACK_MODELS.has(selectedModel) && sakuraBack === 'あり'
+                  && thumbUnified !== 'あり';
   if (!colorSel) return;
   colorSel.disabled = !enabled;
   if (!enabled) {
@@ -865,11 +862,29 @@ function updateSakuraBackColorState() {
   }
 }
 
+/* 桜バックスタイル：🌸印の対応型番、かつ親指一体型でないときだけ指定できる
+   （親指一体型とは両立しないため、「あり」にすると桜バックは「なし」へ戻す） */
+function updateSakuraBackState() {
+  const backSel = document.getElementById('sakura-back-sel');
+  const available = SAKURA_BACK_MODELS.has(selectedModel) && thumbUnified !== 'あり';
+  const lock = document.getElementById('sakura-back-lock-help');
+  if (lock) lock.style.display = (thumbUnified === 'あり') ? '' : 'none';
+  if (backSel) {
+    backSel.disabled = !available;
+    if (!available) { backSel.value = 'なし'; sakuraBack = 'なし'; }
+  }
+  updateSakuraBackColorState();
+}
+
 /* 親指一体型：親指内側とベルト（バンド）が縫い目なしで一体
-   → 「あり」のときはベルトを親指内側と同色にして選択不可 */
+   → 「あり」のときはベルトを親指内側と同色にして選択不可
+   → 桜バックスタイルとは両立しないので、選ぶと桜バックは外れる */
 function setThumbUnified(sel) {
   thumbUnified = sel.value;
   applyThumbUnified();
+  updateSakuraBackState();
+  if (_fillCanvas) drawGlove();
+  updatePrice();
 }
 
 function applyThumbUnified() {
@@ -2171,6 +2186,7 @@ function clearAll() {
   if (thumbUnifiedSel) { thumbUnifiedSel.value = 'なし'; thumbUnifiedSel.disabled = true; }
   applyThumbUnified();
   applyKawanoLink();
+  updateSakuraBackState();
   // ロゴもクリア
   logoVal = '';
   const lsel = document.getElementById('logo-sel');
