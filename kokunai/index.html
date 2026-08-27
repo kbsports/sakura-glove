@@ -221,37 +221,27 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
         <option value="">— 選択 —</option>
         <optgroup label="少年用"><option value="少年型">少年型（中〜高学年・約27.5cm）</option></optgroup>
         <optgroup label="内野手用">
-          <option value="UR型">UR型</option>
-          <option value="櫻庭型">櫻庭型</option>
+          <option value="UR型">UR型 🌸</option>
+          <option value="櫻庭型">櫻庭型 🌸</option>
         </optgroup>
         <optgroup label="投手用">
           <option value="河野型">河野型</option>
         </optgroup>
         <optgroup label="外野手用">
-          <option value="松本型">松本型</option>
+          <option value="松本型">松本型 🌸</option>
         </optgroup>
       </select>
     </div>
     <div id="model-info" class="model-info" aria-live="polite"></div>
-    <div class="model-help" style="display:none">🌸印：桜バックスタイル・親指一体型 対応型番</div>
+    <div class="model-help">🌸印：親指一体型 対応型番</div>
     <div class="model-help" id="kawano-help" style="display:none;color:#c01818;font-weight:bold">※指ホールがありません（ベルト・親指内・人差し指内外・中指内は同色になります）</div>
-    <div style="display:none">
-    <div class="part-row"><span class="part-nm">桜バック</span>
-      <select class="part-sel" id="sakura-back-sel" onchange="setSakuraBack(this)" disabled>
-        <option value="なし">なし</option><option value="あり">あり</option>
-      </select>
-    </div>
-    <div class="part-row"><span class="part-nm">桜バック色</span>
-      <select class="part-sel" id="sakura-back-color" onchange="setSakuraBackColor(this)" disabled><option value="">色選択なし</option></select>
-      <span class="swatch" id="sw-sakura-back"></span>
-    </div>
+    <!-- 桜バックスタイルは海外工場のみ。国内工場では承れないため設けていない -->
     <div class="part-row"><span class="part-nm">親指一体型</span>
       <select class="part-sel" id="thumb-unified-sel" onchange="setThumbUnified(this)" disabled>
         <option value="なし">なし</option><option value="あり">あり</option>
       </select>
     </div>
     <div class="model-help" id="thumb-unified-help" style="display:none">親指一体型＝親指内側とベルトが一体（縫い目なし）。ベルトは親指内側と同色になります。</div>
-    </div>
 
     <div class="sel-group-label">ロゴ</div>
     <div class="part-row"><span class="part-nm">ロゴ</span>
@@ -300,8 +290,10 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">芯トジスタイル</span>
       <select class="part-sel" id="core-stitch-sel" onchange="setCoreStitch(this)">
         <option value="">— 選択 —</option>
-        <option value="たてとじ" id="tate-toji-opt" hidden>たてとじ</option>
-        <option value="よことじ">よことじ</option>
+        <option value="タテトジ" id="tate-toji-opt" hidden>タテトジ</option>
+        <option value="ヨコトジ">ヨコトジ</option>
+        <option value="ヨコトジダブル">ヨコトジダブル</option>
+        <option value="ヨコトジダブル ヒモ抜き">ヨコトジダブル ヒモ抜き</option>
       </select>
     </div>
     <div class="part-row"><span class="part-nm">とじ方向</span>
@@ -694,11 +686,10 @@ let moutonVal = '';      // ムートン（白／黒）※表記のみ
 let selectedModel = '';
 let gradeVal  = '';   // 本体グレード（基本価格）
 const GRADE_PRICE = { 'ゴム・軟式グラブ':44000, '革・硬式グラブ':55000 };
-let sakuraBack = 'なし';
-let sakuraBackColor = '';
 let sakuraWebCutColor = '';  // 桜ウエブ「切り抜き」革色
 let thumbUnified = 'なし';   // 親指一体型（親指内側とベルトが一体）
-const SAKURA_BACK_MODELS = new Set(['内野1型','内野2型','内野3型','内野5型','投手1型','外野1型','外野2型']);
+// 🌸印の対応型番＝親指一体型が選べる型番（国内工場はUR型・櫻庭型・松本型の3つ。桜バックは承れない）
+const THUMB_UNIFIED_MODELS = new Set(['UR型','櫻庭型','松本型']);
 const MODEL_INFO = {
   '少年型':   {type:'少年用', size:'約27.5cm', notes:['中〜高学年向け']},
   '内野1型': {type:'内野手用', size:'約28.5cm', notes:['ポケット：ウエブ寄り〜正面・狭め','指股あり','ボックス型・掴み','店長オススメ／ソフトボールに使って欲しい型番']},
@@ -764,17 +755,12 @@ function setGrade(sel) {
   updatePrice();
 }
 
-/* 型番・桜バック：🌸印の対応型番を選んだときだけ桜バックを指定可能にする */
+/* 型番：🌸印の対応型番を選んだときだけ親指一体型を指定可能にする */
 function setModel(sel) {
   selectedModel = sel.value;
   renderModelInfo();
-  const available = SAKURA_BACK_MODELS.has(selectedModel);
-  const backSel = document.getElementById('sakura-back-sel');
-  if (backSel) {
-    backSel.disabled = !available;
-    if (!available) { backSel.value = 'なし'; sakuraBack = 'なし'; }
-  }
-  // 親指一体型も🌸型番だけ選択可
+  const available = THUMB_UNIFIED_MODELS.has(selectedModel);
+  // 親指一体型は🌸型番だけ選択可
   const tuSel = document.getElementById('thumb-unified-sel');
   if (tuSel) {
     tuSel.disabled = !available;
@@ -782,17 +768,16 @@ function setModel(sel) {
   }
   applyThumbUnified();
   applyKawanoLink();
-  updateSakuraBackColorState();
   applyTateTojiRule();
 }
 
-/* たてとじ（縦とじ）は投手用（河野型）のみ選択可 */
+/* タテトジは投手用（河野型）のみ選択可。ヨコトジ3種はどの型番でも選べる */
 function applyTateTojiRule() {
   const isKawano = (selectedModel === '河野型');
   const opt = document.getElementById('tate-toji-opt');
   if (opt) opt.hidden = !isKawano;
   const csSel = document.getElementById('core-stitch-sel');
-  if (!isKawano && csSel && csSel.value === 'たてとじ') {
+  if (!isKawano && csSel && csSel.value === 'タテトジ') {
     csSel.value = '';
     setCoreStitch(csSel);
   }
@@ -834,20 +819,6 @@ function renderModelInfo() {
   box.classList.add('is-visible');
 }
 
-function setSakuraBack(sel) {
-  sakuraBack = sel.value;
-  updateSakuraBackColorState();
-  updatePrice();
-}
-
-function setSakuraBackColor(sel) {
-  sakuraBackColor = sel.value;
-  const sw = document.getElementById('sw-sakura-back');
-  const color = BODY_COLORS.find(c => c.n === sakuraBackColor);
-  if (sw) sw.style.background = color ? color.hex : '';
-  updatePrice();
-}
-
 /* 桜ウエブ「切り抜き」革色（桜ウエブ選択時のみ有効） */
 function setSakuraWebCutColor(sel) {
   sakuraWebCutColor = sel.value;
@@ -857,17 +828,6 @@ function setSakuraWebCutColor(sel) {
   const cc = document.getElementById('web-shape-cutcolor');
   if (cc) cc.textContent = `切り抜きカラー: ${sakuraWebCutColor || '未選択'}`;
   updatePrice();
-}
-
-function updateSakuraBackColorState() {
-  const colorSel = document.getElementById('sakura-back-color');
-  const enabled = SAKURA_BACK_MODELS.has(selectedModel) && sakuraBack === 'あり';
-  if (!colorSel) return;
-  colorSel.disabled = !enabled;
-  if (!enabled) {
-    colorSel.value = '';
-    setSakuraBackColor(colorSel);
-  }
 }
 
 /* 親指一体型：親指内側とベルト（バンド）が縫い目なしで一体
@@ -1114,15 +1074,6 @@ function init() {
       sel.appendChild(op);
     });
   });
-  const sakuraBackColorSel = document.getElementById('sakura-back-color');
-  if (sakuraBackColorSel) {
-    BODY_COLORS.forEach(c => {
-      const op = document.createElement('option');
-      op.value = c.n;
-      op.textContent = c.n;
-      sakuraBackColorSel.appendChild(op);
-    });
-  }
   const sakuraWebCutColorSel = document.getElementById('sakura-web-cut-color');
   if (sakuraWebCutColorSel) {
     BODY_COLORS.forEach(c => {
@@ -1527,13 +1478,9 @@ function calcPrice() {
   // 本体カラー3色目以降（革色として使用した色数−2 が対象）
   const usedColors = new Set();
   BODY_COLOR_PART_IDS.forEach(id => { if (S[id]) usedColors.add(S[id]); });
-  if (sakuraBackColor) usedColors.add(sakuraBackColor);
   if (sakuraWebCutColor) usedColors.add(sakuraWebCutColor);
   const extraColors = Math.max(0, usedColors.size - 2);
   if (extraColors > 0) add(`本体カラー${extraColors}色分（3色目以降）`, extraColors * 3300);
-
-  // 桜バックスタイル
-  if (sakuraBack === 'あり') add('桜バックスタイル', 6600);
 
   // ウエブ形状の追加料金（桜ウエブ・桜吹雪ウエブ等）
   const wshape = currentWebShapeFile ? WEB_BY_FILE[currentWebShapeFile] : null;
@@ -1613,7 +1560,6 @@ function buildOrderLines() {
   lines.push(`投げ手: ${throwHandVal || '未選択'}`);
   lines.push(`グレード: ${gradeVal || '未選択'}`);
   lines.push(`型番: ${selectedModel || '未選択'}`);
-  lines.push(`桜バック: ${sakuraBack === 'あり' ? `あり / ${sakuraBackColor || '色未選択'}` : 'なし'}`);
   lines.push(`親指一体型: ${thumbUnified === 'あり' ? 'あり（ベルトは親指内側と一体・同色）' : 'なし'}`);
   if (selectedModel === '河野型') lines.push(`※指ホールなし（ベルト・親指内・人差し指内外・中指内は同色）`);
   const OPT_IDS_COPY = ['web','fingerpad','fingercover'];
@@ -1923,7 +1869,7 @@ function triggerDownload(url, filename) {
 
 // 現在の全選択内容をオブジェクト化（空の項目は省いて短く）
 function getState() {
-  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreStitchVal, td:tojiDirVal, mt:moutonVal, gr:gradeVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
+  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreStitchVal, td:tojiDirVal, mt:moutonVal, gr:gradeVal, m:selectedModel,
     tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
     ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor, embrOtherFont], en:embrNote, mr:{} };
   PARTS.forEach(p => { if (S[p.id]) st.S[p.id] = S[p.id]; });
@@ -1959,16 +1905,14 @@ function applyState(st) {
   // 投げ手
   if (st.th) setSel('throw-hand-sel', st.th, setThrowHand);
   // 芯トジスタイル・とじ方向・ムートン
-  if (st.cs) setSel('core-stitch-sel', st.cs, setCoreStitch);
+  // 2026-08-23より前の控えは ひらがな表記だったので読み替える
+  if (st.cs) setSel('core-stitch-sel', {'たてとじ':'タテトジ','よことじ':'ヨコトジ'}[st.cs] || st.cs, setCoreStitch);
   if (st.td) setSel('toji-dir-sel', st.td, setTojiDir);
   if (st.mt) setSel('mouton-sel', st.mt, setMouton);
   // グレード
   if (st.gr) setSel('grade-sel', st.gr, setGrade);
   // 型番
   setSel('model-sel', st.m, setModel);
-  // 桜バック
-  if (st.sb) setSel('sakura-back-sel', st.sb, el => { if (!el.disabled) setSakuraBack(el); });
-  if (st.sbc) setSel('sakura-back-color', st.sbc, el => { if (!el.disabled) setSakuraBackColor(el); });
   // ロゴ＋ロゴ色
   if (st.lg) {
     setSel('logo-sel', st.lg, setLogo);
@@ -2123,19 +2067,11 @@ function clearAll() {
   gradeVal = '';
   const gradeSel = document.getElementById('grade-sel');
   if (gradeSel) gradeSel.value = '';
-  // 型番・桜バックもクリア
+  // 型番もクリア
   selectedModel = '';
-  sakuraBack = 'なし';
-  sakuraBackColor = '';
   renderModelInfo();
   const modelSel = document.getElementById('model-sel');
   if (modelSel) modelSel.value = '';
-  const sakuraBackSel = document.getElementById('sakura-back-sel');
-  if (sakuraBackSel) { sakuraBackSel.value = 'なし'; sakuraBackSel.disabled = true; }
-  const sakuraBackColorSel = document.getElementById('sakura-back-color');
-  if (sakuraBackColorSel) { sakuraBackColorSel.value = ''; sakuraBackColorSel.disabled = true; }
-  const sakuraBackSwatch = document.getElementById('sw-sakura-back');
-  if (sakuraBackSwatch) sakuraBackSwatch.style.background = '';
   // 親指一体型もクリア（ベルトの選択不可も解除）
   thumbUnified = 'なし';
   const thumbUnifiedSel = document.getElementById('thumb-unified-sel');
