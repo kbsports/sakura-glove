@@ -221,27 +221,30 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
         <option value="">— 選択 —</option>
         <optgroup label="少年用"><option value="少年型">少年型（中〜高学年・約27.5cm）</option></optgroup>
         <optgroup label="内野手用">
-          <option value="UR型">UR型 🌸</option>
-          <option value="櫻庭型">櫻庭型 🌸</option>
+          <option value="UR型">UR型</option>
+          <option value="櫻庭型">櫻庭型</option>
         </optgroup>
         <optgroup label="投手用">
           <option value="河野型">河野型</option>
         </optgroup>
         <optgroup label="外野手用">
-          <option value="松本型">松本型 🌸</option>
+          <option value="松本型">松本型</option>
         </optgroup>
       </select>
     </div>
     <div id="model-info" class="model-info" aria-live="polite"></div>
-    <div class="model-help">🌸印：親指一体型 対応型番</div>
+    <div class="model-help" style="display:none">🌸印：親指一体型 対応型番</div>
     <div class="model-help" id="kawano-help" style="display:none;color:#c01818;font-weight:bold">※指ホールがありません（ベルト・親指内・人差し指内外・中指内は同色になります）</div>
     <!-- 桜バックスタイルは海外工場のみ。国内工場では承れないため設けていない -->
+    <!-- 親指一体型は国内工場ではまだ公開しない（2026-08-28）。中身は残してあるので、出すときはこの display:none を外すだけでよい -->
+    <div style="display:none">
     <div class="part-row"><span class="part-nm">親指一体型</span>
       <select class="part-sel" id="thumb-unified-sel" onchange="setThumbUnified(this)" disabled>
         <option value="なし">なし</option><option value="あり">あり</option>
       </select>
     </div>
     <div class="model-help" id="thumb-unified-help" style="display:none">親指一体型＝親指内側とベルトが一体（縫い目なし）。ベルトは親指内側と同色になります。</div>
+    </div>
 
     <div class="sel-group-label">ロゴ</div>
     <div class="part-row"><span class="part-nm">ロゴ</span>
@@ -452,6 +455,11 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       <!-- グラブCanvas（色塗りプレビュー） -->
       <div style="width:100%;max-width:600px;margin:0 auto">
 <canvas id="glove-canvas" style="width:100%;height:auto;display:block;border-radius:8px;background:#fff"></canvas>
+      </div>
+      <!-- 親指一体型の側面図（一体型を選んだときだけ出す） -->
+      <div id="side-view-wrap" style="display:none;width:100%;max-width:600px;margin:14px auto 0">
+        <div style="font-size:.86em;color:#7a0000;font-weight:bold;margin-bottom:6px;text-align:center">親指一体型（横から見た図）</div>
+        <canvas id="side-canvas" style="width:100%;height:auto;display:block;border-radius:8px;background:#fff"></canvas>
       </div>
 
 
@@ -850,6 +858,130 @@ function applyThumbUnified() {
   } else {
     wristSel.disabled = false;
   }
+  updateSideView();
+}
+
+/* ================================================================
+   親指一体型の側面図（横から見た図）
+   一体型を選んだときだけ、正面図の下に出す。
+   パーツは正面図と同じ選択色を使う（`親指一体型/` の画像を source-in で塗る）
+================================================================ */
+const SIDE_DIR = '../親指一体型/';
+const SIDE_PARTS = [
+  ['tu_web.png','web'], ['tu_thumbIn.png','thumbIn'], ['tu_palm.png','palm'],
+  ['tu_binding.png','binding'], ['tu_lace.png','lace'], ['tu_thumbOut.png','thumbOut'],
+  ['tu_hiradashi.png','hiradashi'], ['tu_f1in.png','f1in'], ['tu_thumbLoop.png','thumbLoop'],
+  ['tu_stitch.png','thread'],
+];
+let _sideLine = null, _sideImgs = {}, _sideTmp = null, _sideLoaded = false;
+
+function loadSideView() {
+  if (_sideLoaded) return;
+  _sideLoaded = true;
+  _sideLine = new Image();
+  _sideLine.onload = function() {
+    const cv = document.getElementById('side-canvas');
+    if (cv) { cv.width = _sideLine.naturalWidth; cv.height = _sideLine.naturalHeight; }
+    drawSideView();
+  };
+  _sideLine.src = SIDE_DIR + 'tu_line.png';
+  SIDE_PARTS.forEach(function(pair) {
+    const im = new Image();
+    im.onload = drawSideView;
+    im.src = SIDE_DIR + pair[0];
+    _sideImgs[pair[1]] = im;
+  });
+}
+
+function sideColorOf(id) {
+  const name = S[id];
+  if (name) {
+    const set = (id === 'lace') ? LACE_COLORS : (id === 'thread') ? THREAD_COLORS : BODY_COLORS;
+    const c = set.find(function(c) { return c.n === name; });
+    if (c) return c.hex;
+  }
+  // 個別に選んでいなければ「全体」の色を使う（縫い糸だけは除く）
+  if (id !== 'thread' && S['body']) {
+    const c = BODY_COLORS.find(function(c) { return c.n === S['body']; });
+    if (c) return c.hex;
+  }
+  return null;
+}
+
+function drawSideView() {
+  const cv = document.getElementById('side-canvas');
+  if (!cv || !_sideLine || !_sideLine.complete || !_sideLine.naturalWidth) return;
+  const W = _sideLine.naturalWidth, H = _sideLine.naturalHeight;
+  const ctx = cv.getContext('2d');
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+  if (!_sideTmp) {
+    _sideTmp = document.createElement('canvas');
+    _sideTmp.width = W; _sideTmp.height = H;
+  }
+  const tc = _sideTmp.getContext('2d');
+  SIDE_PARTS.forEach(function(pair) {
+    const id = pair[1], im = _sideImgs[id];
+    if (!im || !im.complete || !im.naturalWidth) return;
+    const hex = sideColorOf(id);
+    if (!hex) {
+      // 縫い糸だけは色未選択でも黒で出す（正面図と同じ扱い）
+      if (id === 'thread') { ctx.globalCompositeOperation = 'source-over'; ctx.drawImage(im, 0, 0); }
+      return;
+    }
+    tc.globalCompositeOperation = 'source-over';
+    tc.clearRect(0, 0, W, H);
+    tc.drawImage(im, 0, 0);
+    tc.globalCompositeOperation = 'source-in';   // その形だけ選択色で塗る
+    tc.fillStyle = hex;
+    tc.fillRect(0, 0, W, H);
+    tc.globalCompositeOperation = 'source-over';
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(_sideTmp, 0, 0);
+  });
+  // 線画を最上面に（白は塗り色を消さない）
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.drawImage(_sideLine, 0, 0);
+  ctx.globalCompositeOperation = 'source-over';
+  drawLogoOnSideView(ctx, W, H);   // ロゴは線画より上に載せる
+}
+
+/* 側面図のロゴを置く場所（実測値）
+   ロゴ面（親指内側）に入る最大の枠を測り、実物写真に合わせてその75%にしてある。
+   面の傾きは 7.30度。cx/cy/w は画像の幅・高さに対する比。 */
+const SIDE_LOGO_PLACE = {
+  '1': {cx:0.2549, cy:0.6141, w:0.2315, rot:7.30},
+  '2': {cx:0.2574, cy:0.6158, w:0.2321, rot:7.30},
+  '3': {cx:0.2639, cy:0.6125, w:0.2659, rot:7.30},
+};
+
+function drawLogoOnSideView(ctx, W, H) {
+  if (!logoVal) return;
+  const pl = SIDE_LOGO_PLACE[logoVal], tr = LOGO_TRIM[logoVal];
+  if (!pl || !tr) return;
+  if (!_logoImgCache[logoVal]) {
+    loadLogoParts(logoVal).then(function() { drawSideView(); });
+    return;
+  }
+  const sp = buildLogoSprite(logoVal);
+  if (!sp) return;
+  const dw = pl.w * W, dh = dw / tr.aspect;
+  ctx.save();
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.translate(pl.cx * W, pl.cy * H);
+  ctx.rotate(pl.rot * Math.PI / 180);
+  ctx.drawImage(sp, tr.box[0], tr.box[1], tr.w, tr.h, -dw / 2, -dh / 2, dw, dh);
+  ctx.restore();
+}
+
+function updateSideView() {
+  const wrap = document.getElementById('side-view-wrap');
+  if (!wrap) return;
+  const on = (thumbUnified === 'あり');
+  wrap.style.display = on ? '' : 'none';
+  if (on) { loadSideView(); drawSideView(); }
 }
 
 /* ================================================================
@@ -2377,6 +2509,7 @@ function drawGlove() {
   _displayCtx.globalCompositeOperation = 'source-over';
   // ベルト部のロゴ（ロゴカードとまったく同じ塗りを重ねる）
   drawLogoOnDiagram();
+  drawSideView();     // 親指一体型の側面図（出ているときだけ中身が変わる）
 
 }
 
