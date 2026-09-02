@@ -232,11 +232,10 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       <select class="part-sel" id="model-sel" onchange="setModel(this)">
         <option value="">— 選択 —</option>
         <option value="捕手用ミット1型">捕手用ミット1型</option>
-        <option value="捕手用ミット2型">捕手用ミット2型</option>
       </select>
     </div>
     <div id="model-info" class="model-info" aria-live="polite"></div>
-    <div class="model-help">※指定図は1型（オープンバック）の絵で表示します。2型（クローズバック）も配色の考え方は同じです。</div>
+    <div class="model-help">※キャッチャーミットはオープンバック（背面が開いた形）のみのお取り扱いです。</div>
 
     <div class="sel-group-label">ロゴ</div>
     <div class="part-row"><span class="part-nm">ロゴ</span>
@@ -273,6 +272,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">親指かけ</span>  <select class="part-sel" data-part="thumbLoop"  onchange="setPart(this)"><option value="">— 選択 —</option></select><span class="swatch" id="sw-thumbLoop"></span></div>
     <div class="part-row"><span class="part-nm">小指かけ</span>  <select class="part-sel" data-part="littleLoop" onchange="setPart(this)"><option value="">— 選択 —</option></select><span class="swatch" id="sw-littleLoop"></span></div>
     <div class="part-row"><span class="part-nm">ヘリ革</span>    <select class="part-sel" data-part="binding"    onchange="setPart(this)"><option value="">— 選択 —</option></select><span class="swatch" id="sw-binding"></span></div>
+    <div class="model-help">※指出しはカラー選択不可です。</div>
 
     <div class="sel-group-label">ハミダシ</div>
     <div class="part-row"><span class="part-nm">ハミダシ</span>
@@ -320,7 +320,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="part-row"><span class="part-nm">書体</span>
       <select class="part-sel" id="ep-hiraura-font" onchange="setEmbrPlaceField('hiraura','font',this)">
-        <option value="">— 選択 —</option><option value="漢字">漢字</option><option value="活字体">活字体</option><option value="筆記体（ブラッシュ体）">筆記体（ブラッシュ体）</option>
+        <option value="">— 選択 —</option><option value="行書体">行書体</option><option value="楷書体">楷書体</option><option value="ブロック体">ブロック体</option><option value="筆記体">筆記体</option>
       </select>
     </div>
     <div class="part-row"><span class="part-nm">単色</span>
@@ -341,7 +341,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="part-row"><span class="part-nm">書体</span>
       <select class="part-sel" id="ep-thumbin-font" onchange="setEmbrPlaceField('thumbin','font',this)">
-        <option value="">— 選択 —</option><option value="漢字">漢字</option><option value="活字体">活字体</option><option value="筆記体（ブラッシュ体）">筆記体（ブラッシュ体）</option>
+        <option value="">— 選択 —</option><option value="行書体">行書体</option><option value="楷書体">楷書体</option><option value="ブロック体">ブロック体</option><option value="筆記体">筆記体</option>
       </select>
     </div>
     <div class="part-row"><span class="part-nm">単色</span>
@@ -362,7 +362,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="part-row"><span class="part-nm">書体</span>
       <select class="part-sel" id="ep-pinkyin-font" onchange="setEmbrPlaceField('pinkyin','font',this)">
-        <option value="">— 選択 —</option><option value="漢字">漢字</option><option value="活字体">活字体</option><option value="筆記体（ブラッシュ体）">筆記体（ブラッシュ体）</option>
+        <option value="">— 選択 —</option><option value="行書体">行書体</option><option value="楷書体">楷書体</option><option value="ブロック体">ブロック体</option><option value="筆記体">筆記体</option>
       </select>
     </div>
     <div class="part-row"><span class="part-nm">単色</span>
@@ -386,7 +386,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     </div>
     <div class="part-row"><span class="part-nm">書体</span>
       <select class="part-sel" id="ep-other-font" onchange="embrOtherFont=this.value">
-        <option value="">— 選択 —</option><option value="漢字">漢字</option><option value="活字体">活字体</option><option value="筆記体（ブラッシュ体）">筆記体（ブラッシュ体）</option>
+        <option value="">— 選択 —</option><option value="行書体">行書体</option><option value="楷書体">楷書体</option><option value="ブロック体">ブロック体</option><option value="筆記体">筆記体</option>
       </select>
     </div>
     <div class="part-row"><span class="part-nm">刺繍カラー</span>
@@ -453,7 +453,6 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
           <div class="pr-g" style="margin-top:2px">【スタンダード】</div>
           <div class="pr"><span>軟式・ゴム用</span><span>¥46,200</span></div>
           <div class="pr"><span>硬式・革用</span><span>¥60,500</span></div>
-          <div class="prn">※1型・2型ともに同一価格です</div>
 
           <div class="pr-h">― オプション価格表 ―</div>
           <div class="pr"><span>本体カラー3色目以降</span><span>¥3,300／1色ごと</span></div>
@@ -623,11 +622,11 @@ let hamidashiType = '', hamidashiColor = '';
 let fingerPos = '';
 let selectedModel = '';
 let gradeVal  = '';   // 本体グレード（基本価格）
-// 本体価格は1型・2型とも同額（海外工場）
+// 本体価格（海外工場）
 const GRADE_PRICE = { 'ゴム・軟式ミット':46200, '革・硬式ミット':60500 };
 const MODEL_INFO = {
-  '捕手用ミット1型': {type:'捕手用キャッチャーミット', size:'', msize:'ノーマルバック', notes:['背面が開いた形（オープンバック）']},
-  '捕手用ミット2型': {type:'捕手用キャッチャーミット', size:'', msize:'クローズバック', notes:['背面が閉じた形']},
+  // オープンバックのみ（2026-08-30ユーザー確定。クローズバックは受け付けない）
+  '捕手用ミット1型': {type:'捕手用キャッチャーミット', size:'', msize:'オープンバック', notes:['背面が開いた形（オープンバック）']},
 };
 
 const BASE_TITLE = document.title;
