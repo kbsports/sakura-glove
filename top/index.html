@@ -599,12 +599,14 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <!-- ステッチ・革紐の色見本（TOP専用・参考） -->
     <div class="diag-card">
       <details open>
-        <summary style="cursor:pointer;font-weight:bold;color:#7a0000">🧵 ステッチ（17色）・革紐（20色）の色見本</summary>
+        <summary style="cursor:pointer;font-weight:bold;color:#7a0000">🧵 ステッチ（17色）・革紐（20色）・刺繍（14色）の色見本</summary>
         <div style="margin-top:10px">
           <img src="ステッチ一覧.jpg" alt="ステッチカラー一覧" style="width:100%;height:auto;border-radius:8px;border:1px solid #eee">
           <div style="font-size:.72em;color:#7a5500;margin:6px 0 12px;line-height:1.6">※赤い革の上に縫った見本です。実際は選んだ革の色の上に縫います。</div>
           <img src="革紐一覧.jpg" alt="革紐カラー一覧" style="width:100%;height:auto;border-radius:8px;border:1px solid #eee">
           <div style="font-size:.72em;color:#7a5500;margin-top:6px;line-height:1.6">※「中白」は紐の芯が白い革紐です（ブラック中白・レッド中白・ブラウン中白・ブルー中白）。</div>
+          <div style="font-weight:bold;color:#7a0000;font-size:.85em;margin:16px 0 6px">刺繍カラー（14色）</div>
+          <img src="刺繍カラー一覧.jpg" alt="刺繍カラー一覧" style="width:100%;max-width:520px;display:block;margin:0 auto;height:auto;border-radius:8px;border:1px solid #eee">
         </div>
       </details>
     </div>
@@ -712,22 +714,22 @@ const LACE_COLORS = [
   {n:'中白ブルー',    hex:'#0F35F2'},
 ];
 
+/* 刺繍糸（TOP専用14色・2026-09-11ユーザー提供の「TOP刺繍カラー一覧」から実測） */
 const THREAD_COLORS = [
-  {n:'ゴールド',       hex:'#C9A227'},
-  {n:'シルバー',       hex:'#B8B8B8'},
-  {n:'ライトゴールド', hex:'#D8C56E'},
-  {n:'ライトシルバー', hex:'#DADADA'},
-  {n:'イエロー',       hex:'#EFAD35'},
-  {n:'オレンジ',       hex:'#F57921'},
-  {n:'レッド',         hex:'#C8313A'},
-  {n:'ピンク',         hex:'#DE6FAC'},
-  {n:'パープル',       hex:'#7C53A1'},
-  {n:'グリーン',       hex:'#38663E'},
-  {n:'スカイブルー',   hex:'#5BB5E8'},
-  {n:'ロイヤルブルー', hex:'#1144BB'},
-  {n:'ネイビー',       hex:'#303B4F'},
-  {n:'ブラック',       hex:'#231F20'},
-  {n:'ホワイト',       hex:'#E6E6E6'},
+  {n:'ホワイト',       hex:'#F7F7F7'},
+  {n:'イエロー',       hex:'#FEF23C'},
+  {n:'オレンジ',       hex:'#F27C10'},
+  {n:'レッド',         hex:'#E50D1F'},
+  {n:'ピンク',         hex:'#EC5B9C'},
+  {n:'サックス',       hex:'#73C8ED'},
+  {n:'ブルー',         hex:'#0464B1'},
+  {n:'ネイビー',       hex:'#123C6E'},
+  {n:'グリーン',       hex:'#036C4F'},
+  {n:'ライトゴールド', hex:'#D9BC6E'},
+  {n:'ライトシルバー', hex:'#C6C6C6'},
+  {n:'シルバー',       hex:'#D1D1D1'},
+  {n:'ゴールド',       hex:'#EFBB62'},
+  {n:'ブラック',       hex:'#221F1F'},
 ];
 
 /* ハミダシ専用。キリハミは白の革を使うため、本体革7色＋ホワイト。 */
