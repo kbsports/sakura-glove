@@ -193,7 +193,10 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">電話番号</span>
       <input type="text" class="part-sel" id="cust-tel" oninput="setCust()" placeholder="例）090-1234-5678" inputmode="tel" autocomplete="tel">
     </div>
-    <div class="model-help">ご注文の確定とお届けに必要です。お客様情報は<b>復元コードには含まれません</b>ので、コードやリンクを他の方に渡しても個人情報は伝わりません。</div>
+    <div class="part-row"><span class="part-nm">メールアドレス</span>
+      <input type="email" class="part-sel" id="cust-mail" oninput="setCust()" placeholder="例）sakura@example.com（任意）" inputmode="email" autocomplete="email">
+    </div>
+    <div class="model-help">ご注文の確定とお届けに必要です（メールアドレスは任意）。お客様情報は<b>復元コードには含まれません</b>ので、コードやリンクを他の方に渡しても個人情報は伝わりません。</div>
 
     <div class="sel-group-label">注文情報</div>
     <div class="part-row"><span class="part-nm">受付番号</span>
@@ -662,7 +665,7 @@ const S = {};
 const OPT = {};          // 指カバー／指あて／なし
 let orderNo   = '';
 // お客様情報（注文送信・PDF控えにのみ使用。復元コードには含めない）
-let custName = '', custZip = '', custAddr = '', custTel = '';
+let custName = '', custZip = '', custAddr = '', custTel = '', custMail = '';
 let usageVal = '';       // 使用区分 ※表記のみ
 let throwHandVal = '';   // 投げ手 ※表記のみ、指定図には反映しない
 let tojiDirVal = '順とじ';            // とじ方向：キャッチャーミットはこれのみ ※表記のみ
@@ -701,6 +704,7 @@ function setCust() {
   custZip  = v('cust-zip');
   custAddr = v('cust-addr');
   custTel  = v('cust-tel');
+  custMail = v('cust-mail');
 }
 
 /* 使用区分：表記のみ */
@@ -1389,6 +1393,7 @@ function buildOrderLines() {
   lines.push(`郵便番号: ${custZip || '未入力'}`);
   lines.push(`住所: ${custAddr || '未入力'}`);
   lines.push(`電話番号: ${custTel || '未入力'}`);
+  lines.push(`メールアドレス: ${custMail || '未入力'}`);
   lines.push('');
   lines.push('工場: 国内工場');
   lines.push(`投げ手: ${throwHandVal || '未選択'}`);
@@ -1549,6 +1554,7 @@ async function submitOrder() {
         郵便番号: custZip,
         住所: custAddr,
         電話番号: custTel,
+        メールアドレス: custMail,
         型番: selectedModel,
         注文内容: lines.join('\n'),
         配色復元リンク: restoreUrl,
@@ -1866,8 +1872,8 @@ function clearAll() {
   const tojiDirSel = document.getElementById('toji-dir-sel');
   if (tojiDirSel) tojiDirSel.value = '順とじ';
   // お客様情報もクリア（別のお客様の情報が残るのを防ぐ）
-  custName = custZip = custAddr = custTel = '';
-  ['cust-name','cust-zip','cust-addr','cust-tel'].forEach(id => {
+  custName = custZip = custAddr = custTel = custMail = '';
+  ['cust-name','cust-zip','cust-addr','cust-tel','cust-mail'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
