@@ -212,12 +212,16 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">使用区分</span>
       <select class="part-sel" id="usage-sel" onchange="setUsage(this)">
         <option value="">— 選択 —</option>
-        <option value="硬式野球">硬式野球</option>
-        <option value="軟式野球">軟式野球</option>
-        <option value="ゴムソフト11インチ">ゴムソフト11インチ</option>
-        <option value="ゴムソフト12インチ">ゴムソフト12インチ</option>
-        <option value="革ソフト11インチ">革ソフト11インチ</option>
-        <option value="革ソフト12インチ">革ソフト12インチ</option>
+        <optgroup label="ゴム・軟式">
+          <option value="軟式野球J号">軟式野球J号</option>
+          <option value="軟式野球M号">軟式野球M号</option>
+          <option value="ゴムソフト11インチ">ゴムソフト11インチ</option>
+          <option value="ゴムソフト12インチ">ゴムソフト12インチ</option>
+        </optgroup>
+        <optgroup label="革・硬式">
+          <option value="硬式野球">硬式野球</option>
+          <option value="革ソフトボール">革ソフトボール</option>
+        </optgroup>
       </select>
     </div>
 
@@ -667,6 +671,20 @@ let orderNo   = '';
 // お客様情報（注文送信・PDF控えにのみ使用。復元コードには含めない）
 let custName = '', custZip = '', custAddr = '', custTel = '', custMail = '';
 let usageVal = '';       // 使用区分 ※表記のみ
+/* 使用区分：グレードで選んだほう（ゴム・軟式／革・硬式）の選択肢だけを出す（2026-10-01） */
+const USAGE_GROUPS = [
+  ['ゴム・軟式', '軟式', ['軟式野球J号', '軟式野球M号', 'ゴムソフト11インチ', 'ゴムソフト12インチ']],
+  ['革・硬式', '硬式', ['硬式野球', '革ソフトボール']],
+];
+function renderUsageOptions() {
+  const sel = document.getElementById('usage-sel');
+  if (!sel) return;
+  const groups = USAGE_GROUPS.filter(g => !gradeVal || gradeVal.indexOf(g[1]) >= 0);
+  if (usageVal && !groups.some(g => g[2].includes(usageVal))) usageVal = '';
+  sel.innerHTML = '<option value="">— 選択 —</option>' + groups.map(g =>
+    `<optgroup label="${g[0]}">` + g[2].map(v => `<option value="${v}">${v}</option>`).join('') + '</optgroup>').join('');
+  sel.value = usageVal;
+}
 let throwHandVal = '';   // 投げ手 ※表記のみ、指定図には反映しない
 let tojiDirVal = '順とじ';            // とじ方向：キャッチャーミットはこれのみ ※表記のみ
 // ハミダシ：切りハミ＝ホワイト／ブラック、玉ハミ＝本体カラーから選ぶ、なし。
@@ -831,7 +849,7 @@ function updateHamidashiSwatch() {
 }
 
 /* グレード（基本価格） */
-function setGrade(sel) { gradeVal = sel.value; updatePrice(); }
+function setGrade(sel) { gradeVal = sel.value; renderUsageOptions(); updatePrice(); }
 
 /* 型番 */
 function setModel(sel) {
@@ -1886,6 +1904,8 @@ function clearAll() {
   gradeVal = '';
   const gradeSel = document.getElementById('grade-sel');
   if (gradeSel) gradeSel.value = '';
+  usageVal = '';
+  renderUsageOptions();
   selectedModel = 'K-1';
   const modelSel = document.getElementById('model-sel');
   if (modelSel) modelSel.value = 'K-1';
