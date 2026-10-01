@@ -217,6 +217,21 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
         <option value="革・硬式グラブ">革・硬式グラブ（¥55,000）</option>
       </select>
     </div>
+    <div class="part-row"><span class="part-nm">使用区分</span>
+      <select class="part-sel" id="usage-sel" onchange="setUsage(this)">
+        <option value="">— 選択 —</option>
+        <optgroup label="ゴム・軟式">
+          <option value="軟式野球J号">軟式野球J号</option>
+          <option value="軟式野球M号">軟式野球M号</option>
+          <option value="ゴムソフト11インチ">ゴムソフト11インチ</option>
+          <option value="ゴムソフト12インチ">ゴムソフト12インチ</option>
+        </optgroup>
+        <optgroup label="革・硬式">
+          <option value="硬式野球">硬式野球</option>
+          <option value="革ソフトボール">革ソフトボール</option>
+        </optgroup>
+      </select>
+    </div>
 
     <div class="sel-group-label">型番・バックスタイル</div>
     <div class="part-row"><span class="part-nm">型番</span>
@@ -705,6 +720,22 @@ let moutonVal = '';      // ムートン（白／黒）※表記のみ
 let selectedModel = '';
 let gradeVal  = '';   // 本体グレード（基本価格）
 const GRADE_PRICE = { 'ゴム・軟式グラブ':44000, '革・硬式グラブ':55000 };
+/* 使用区分：グレードで選んだほう（ゴム・軟式／革・硬式）の選択肢だけを出す（2026-10-01） */
+const USAGE_GROUPS = [
+  ['ゴム・軟式', '軟式', ['軟式野球J号', '軟式野球M号', 'ゴムソフト11インチ', 'ゴムソフト12インチ']],
+  ['革・硬式', '硬式', ['硬式野球', '革ソフトボール']],
+];
+let usageVal = '';       // 使用区分 ※表記のみ
+function setUsage(sel) { usageVal = sel.value; }
+function renderUsageOptions() {
+  const sel = document.getElementById('usage-sel');
+  if (!sel) return;
+  const groups = USAGE_GROUPS.filter(g => !gradeVal || gradeVal.indexOf(g[1]) >= 0);
+  if (usageVal && !groups.some(g => g[2].includes(usageVal))) usageVal = '';
+  sel.innerHTML = '<option value="">— 選択 —</option>' + groups.map(g =>
+    `<optgroup label="${g[0]}">` + g[2].map(v => `<option value="${v}">${v}</option>`).join('') + '</optgroup>').join('');
+  sel.value = usageVal;
+}
 let sakuraWebCutColor = '';  // 桜ウエブ「切り抜き」革色
 let thumbUnified = 'なし';   // 親指一体型（親指内側とベルトが一体）
 // 🌸印の対応型番＝親指一体型が選べる型番（国内工場はUR型・櫻庭型・松本型の3つ。桜バックは承れない）
@@ -772,7 +803,7 @@ function setMouton(sel) {
 
 /* グレード（基本価格） */
 function setGrade(sel) {
-  gradeVal = sel.value;
+  gradeVal = sel.value; renderUsageOptions();
   updatePrice();
 }
 
@@ -1827,6 +1858,7 @@ function buildOrderLines() {
   lines.push('工場: 国内工場');
   lines.push(`投げ手: ${throwHandVal || '未選択'}`);
   lines.push(`グレード: ${gradeVal || '未選択'}`);
+  lines.push(`使用区分: ${usageVal || '未選択'}`);
   lines.push(`型番: ${selectedModel || '未選択'}`);
   lines.push(`親指一体型: ${thumbUnified === 'あり' ? 'あり（ベルトは親指内側と一体・同色）' : 'なし'}`);
   if (selectedModel === '河野型') lines.push(`※指ホールなし（ベルト・親指内・人差し指内外・中指内は同色）`);
@@ -2138,7 +2170,7 @@ function triggerDownload(url, filename) {
 
 // 現在の全選択内容をオブジェクト化（空の項目は省いて短く）
 function getState() {
-  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreStitchVal, td:tojiDirVal, mt:moutonVal, gr:gradeVal, m:selectedModel,
+  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreStitchVal, td:tojiDirVal, mt:moutonVal, gr:gradeVal, us:usageVal, m:selectedModel,
     tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
     ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor, embrOtherFont], en:embrNote, mr:{} };
   PARTS.forEach(p => { if (S[p.id]) st.S[p.id] = S[p.id]; });
@@ -2180,6 +2212,7 @@ function applyState(st) {
   if (st.mt) setSel('mouton-sel', st.mt, setMouton);
   // グレード
   if (st.gr) setSel('grade-sel', st.gr, setGrade);
+  if (st.us) setSel('usage-sel', st.us, setUsage);
   // 型番
   setSel('model-sel', st.m, setModel);
   // ロゴ＋ロゴ色
@@ -2336,6 +2369,8 @@ function clearAll() {
   gradeVal = '';
   const gradeSel = document.getElementById('grade-sel');
   if (gradeSel) gradeSel.value = '';
+  usageVal = '';
+  renderUsageOptions();
   // 型番もクリア
   selectedModel = '';
   renderModelInfo();
