@@ -216,6 +216,15 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
         <option value="革・硬式グラブ">革・硬式グラブ（¥66,000）</option>
       </select>
     </div>
+    <div class="part-row"><span class="part-nm">使用区分</span>
+      <select class="part-sel" id="usage-sel" onchange="setUsage(this)">
+        <option value="">— 選択 —</option>
+        <optgroup label="革・硬式">
+          <option value="硬式野球">硬式野球</option>
+          <option value="革ソフトボール">革ソフトボール</option>
+        </optgroup>
+      </select>
+    </div>
 
     <div class="sel-group-label">型番・バックスタイル</div>
     <div class="part-row"><span class="part-nm">レザー</span>
@@ -830,6 +839,21 @@ let sakuraFubukiCount = 0;  // 桜吹雪の箇所数（1箇所 ¥6,600）
 let selectedModel = '';
 let gradeVal  = '';   // 本体グレード（基本価格）
 const GRADE_PRICE = { '革・硬式グラブ':66000 };   // TOPは革・硬式グラブのみ（軟式・ミットの設定なし）
+/* 使用区分：グレードで選んだほう（ゴム・軟式／革・硬式）の選択肢だけを出す（2026-10-01） */
+const USAGE_GROUPS = [
+  ['革・硬式', '硬式', ['硬式野球', '革ソフトボール']],
+];
+let usageVal = '';       // 使用区分 ※表記のみ
+function setUsage(sel) { usageVal = sel.value; }
+function renderUsageOptions() {
+  const sel = document.getElementById('usage-sel');
+  if (!sel) return;
+  const groups = USAGE_GROUPS.filter(g => !gradeVal || gradeVal.indexOf(g[1]) >= 0);
+  if (usageVal && !groups.some(g => g[2].includes(usageVal))) usageVal = '';
+  sel.innerHTML = '<option value="">— 選択 —</option>' + groups.map(g =>
+    `<optgroup label="${g[0]}">` + g[2].map(v => `<option value="${v}">${v}</option>`).join('') + '</optgroup>').join('');
+  sel.value = usageVal;
+}
 let sakuraWebCutColor = '';  // 桜ウエブ「切り抜き」革色
 let thumbUnified = 'なし';   // 親指一体型（親指内側とベルトが一体）
 // 親指一体型が選べる型番。TOPは「6.バックスタイル ノーマル・親指一体型」でどの型番でも選べる
@@ -916,7 +940,7 @@ function setMouton(sel) {
 
 /* グレード（基本価格） */
 function setGrade(sel) {
-  gradeVal = sel.value;
+  gradeVal = sel.value; renderUsageOptions();
   updatePrice();
 }
 
@@ -2075,6 +2099,7 @@ function buildOrderLines() {
   lines.push('納期: 約3ヶ月（目安）');
   lines.push(`投げ手: ${throwHandVal || '未選択'}`);
   lines.push(`基本価格: ${gradeVal || '未選択'}`);
+  lines.push(`使用区分: ${usageVal || '未選択'}`);
   lines.push(`型番: ${selectedModel || '未選択'}`);
   lines.push(`バックスタイル: ${thumbUnified === 'あり' ? '親指一体型（ベルトは親指内側と一体・同色）' : 'ノーマル'}`);
   const OPT_IDS_COPY = [];   // TOPには部位ごとの あり／なし プルダウンが無い
@@ -2382,7 +2407,7 @@ function triggerDownload(url, filename) {
 
 // 現在の全選択内容をオブジェクト化（空の項目は省いて短く）
 function getState() {
-  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreHardVal, td:cuffStyleVal, mt:moutonVal, gr:gradeVal, m:selectedModel,
+  const st = { v:1, on:orderNo, th:throwHandVal, cs:coreHardVal, td:cuffStyleVal, mt:moutonVal, gr:gradeVal, us:usageVal, m:selectedModel,
     dh:doteHimoVal, ak:ateKawaVal, fo:fingerOptVal, sns:snsVal, sf:sakuraFubukiCount,
     tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
     ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor, embrOtherFont], en:embrNote, mr:{} };
@@ -2429,6 +2454,7 @@ function applyState(st) {
   if (st.sf) setSel('sakura-fubuki-sel', String(st.sf), setSakuraFubuki);
   // グレード
   if (st.gr) setSel('grade-sel', st.gr, setGrade);
+  if (st.us) setSel('usage-sel', st.us, setUsage);
   // 型番
   setSel('model-sel', st.m, setModel);
   // ロゴ＋ロゴ色
@@ -2589,6 +2615,8 @@ function clearAll() {
   gradeVal = '';
   const gradeSel = document.getElementById('grade-sel');
   if (gradeSel) gradeSel.value = '';
+  usageVal = '';
+  renderUsageOptions();
   // 型番もクリア
   selectedModel = '';
   renderModelInfo();
