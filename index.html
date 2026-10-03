@@ -1929,7 +1929,8 @@ const EMBR_PLACES = {
 ================================================================ */
 
 const EMBR_DRAW = [
-  {key:'thumbin', canvas:'glove-canvas', cx:0.6072, cy:0.674, w:0.1, h:0.035, rot:-46.5},   // g_thumb
+  {key:'thumbin', canvas:'glove-canvas', cx:0.6072, cy:0.674, w:0.1, h:0.035, rot:-46.5,
+   alt:{cx:0.6427, cy:0.6237, w:0.097, h:0.034}},   // alt＝丸抜きを入れたとき、丸に重ならないよう逃がす位置   // g_thumb
   {key:'pinkyin', canvas:'glove-canvas', cx:0.2674, cy:0.5582, w:0.06, h:0.03, rot:-88.5},   // g_pinky
   {key:'hiraura', canvas:'glove-canvas', cx:0.3894, cy:0.6952, w:0.14, h:0.035, rot:0},   // g_hira_front
 ];
@@ -1976,8 +1977,49 @@ function _embrPaint(ctx, e, maxW, size) {
   ctx.fillStyle = _embrHex(e.mono);
   ctx.fillText(e.text, 0, 0);
 }
+// 丸抜き刺繍（親指付根）。位置は図の幅・高さに対する割合（刺繍位置あわせツールで調整）。w は直径（図の幅に対する比）
+const MARU_DRAW = {canvas:'glove-canvas', cx:0.5626, cy:0.7286, w:0.057, rot:-20};
+function drawMaru() {
+  if (!(EMBR.maruBase || EMBR.maruEdge || EMBR.maruNumColor || EMBR.maruNumber)) return;
+  const d = MARU_DRAW, cv = document.getElementById(d.canvas);
+  if (!cv || !cv.width) return;
+  const bg = _embrBg('thumbin');   // 土台カラー未選択なら革の色をそのまま見せる
+  const hexOf = function(set, n) { const c = n ? set.find(function(x) { return x.n === n; }) : null; return c ? c.hex : null; };
+  const base = hexOf(BODY_COLORS, EMBR.maruBase) || bg;
+  const edge = hexOf(BODY_COLORS, EMBR.maruEdge) || bg;
+  const num  = hexOf(THREAD_COLORS, EMBR.maruNumColor) || '#111111';
+  const R = d.w * cv.width / 2;
+  const ctx = cv.getContext('2d');
+  ctx.save();
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.translate(d.cx * cv.width, d.cy * cv.height);
+  ctx.rotate(d.rot * Math.PI / 180);
+  const disc = function(r, fill) { ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fillStyle = fill; ctx.fill(); };
+  disc(R, edge);                                   // 土台フチ（外周の革）
+  ctx.lineWidth = Math.max(1, R * 0.05); ctx.strokeStyle = 'rgba(0,0,0,.45)';
+  ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.stroke();
+  disc(R * 0.82, base);                            // 土台（丸く抜いた中の地）
+  ctx.beginPath(); ctx.arc(0, 0, R * 0.68, 0, Math.PI * 2);
+  ctx.lineWidth = R * 0.09; ctx.strokeStyle = num; ctx.stroke();   // 番号と同じ糸のリング
+  ctx.lineWidth = Math.max(1, R * 0.03); ctx.strokeStyle = 'rgba(0,0,0,.4)';
+  ctx.beginPath(); ctx.arc(0, 0, R * 0.82, 0, Math.PI * 2); ctx.stroke();
+  const t = EMBR.maruNumber;
+  if (t) {
+    let size = R * 0.9;
+    ctx.font = '700 ' + size + 'px Georgia, "Times New Roman", serif';
+    const maxW = R * 1.0;
+    const tw = ctx.measureText(t).width;
+    if (tw > maxW) { size *= maxW / tw; ctx.font = '700 ' + size + 'px Georgia, "Times New Roman", serif'; }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = num; ctx.fillText(t, 0, size * 0.04);
+  }
+  ctx.restore();
+}
 function drawEmbroidery() {
-  EMBR_DRAW.forEach(function(d) {
+  drawMaru();
+  const maruOn = !!(EMBR.maruBase || EMBR.maruEdge || EMBR.maruNumColor || EMBR.maruNumber);
+  EMBR_DRAW.forEach(function(d0) {
+    const d = (maruOn && d0.alt) ? Object.assign({}, d0, d0.alt) : d0;
     const e = EMBR_PLACES[d.key];
     if (!e || !e.text) return;
     const cv = document.getElementById(d.canvas);
@@ -2094,6 +2136,7 @@ function setEmbrField(key, el) {
     if (sw) sw.style.background = c ? c.hex : '';
   }
   updatePrice();
+  redrawEmbroidery();
 }
 
 /* ================================================================
@@ -2541,6 +2584,18 @@ function escapeHtml(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&
 // 最終確認モーダルを開く（毎回モーダル内容を組み直して古い状態を残さない）
 function openConfirm() {
   if (!selectedModel) { alert('型番を選択してください。'); return; }
+  // 丸抜きは、1つでも記入したら3色とも選ぶまで進めない
+  if (EMBR.maruBase || EMBR.maruEdge || EMBR.maruNumColor || EMBR.maruNumber) {
+    const mm = [];
+    if (!EMBR.maruBase)     mm.push('土台カラー');
+    if (!EMBR.maruEdge)     mm.push('土台フチカラー');
+    if (!EMBR.maruNumColor) mm.push('番号カラー');
+    if (mm.length) {
+      alert('丸抜きの' + mm.join('・') + 'を選択してください。\n（丸抜きをご注文されない場合は、丸抜きの入力をすべて空にしてください）');
+      document.getElementById(!EMBR.maruBase ? 'maru-base' : (!EMBR.maruEdge ? 'maru-edge' : 'maru-num-color'))?.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+  }
   setCust();
   const missing = [];
   if (!custName) missing.push('氏名');
