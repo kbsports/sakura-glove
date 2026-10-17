@@ -236,18 +236,18 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       <select class="part-sel" id="model-sel" onchange="setModel(this)">
         <option value="">— 選択 —</option>
         <optgroup label="内野手用">
-          <option value="TOP46型">TOP46型（28.0cm）</option>
-          <option value="TOP465型">TOP465型（28.5cm）</option>
-          <option value="TOP65型">TOP65型（29.0cm）</option>
+          <option value="TOP46型">TOP46型（約28.0cm）</option>
+          <option value="TOP465型">TOP465型（約28.5cm）</option>
+          <option value="TOP65型">TOP65型（約29.0cm）</option>
           <option value="櫻庭型">櫻庭型（約29.2cm）</option>
         </optgroup>
         <optgroup label="投手用">
-          <option value="TOP1型">TOP1型（30.0cm）</option>
-          <option value="TOP11型">TOP11型（29.0cm）</option>
+          <option value="TOP1型">TOP1型（約30.0cm）</option>
+          <option value="TOP11型">TOP11型（約29.0cm）</option>
         </optgroup>
         <optgroup label="外野手用">
-          <option value="TOP8型">TOP8型（32.0cm）</option>
-          <option value="TOP8S型">TOP8S型（31.0cm）</option>
+          <option value="TOP8型">TOP8型（約32.0cm）</option>
+          <option value="TOP8S型">TOP8S型（約31.0cm）</option>
           <option value="松本型">松本型（約32.5cm）</option>
         </optgroup>
       </select>
@@ -864,13 +864,13 @@ let thumbUnified = 'なし';   // 親指一体型（親指内側とベルトが�
 // 親指一体型が選べる型番。TOPは「6.バックスタイル ノーマル・親指一体型」でどの型番でも選べる
 const THUMB_UNIFIED_MODELS = new Set(['TOP46型','TOP465型','TOP65型','TOP1型','TOP11型','TOP8型','TOP8S型','櫻庭型','松本型']);
 const MODEL_INFO = {
-  'TOP46型':  {type:'内野手用', size:'28.0cm', notes:['小型内野用でセカンドを中心に守る選手向け','軽量感があり足運びのストレスになりにくい']},
-  'TOP465型': {type:'内野手用', size:'28.5cm', notes:['内野ならどこでも守れる捕球面の広いモデル','軽量感があり足運びのストレスになりにくい']},
-  'TOP65型':  {type:'内野手用', size:'29.0cm', notes:['大きめ内野用で打球対応への不安がないモデル','軽量感があり足運びのストレスになりにくい']},
-  'TOP1型':   {type:'投手用',   size:'30.0cm', notes:['横型投手用で強く握り込めるモデル']},
-  'TOP11型':  {type:'投手用',   size:'29.0cm', notes:['縦型投手用で守備重視の投手へオススメ']},
-  'TOP8型':   {type:'外野手用', size:'32.0cm', notes:['ガッツリ掴みたい大きめグラブが好きな選手向け','小指2本入れ対応']},
-  'TOP8S型':  {type:'外野手用', size:'31.0cm', notes:['少し小型でも捕球面は広く持ち返しやすいモデル','小指2本入れ対応']},
+  'TOP46型':  {type:'内野手用', size:'約28.0cm', notes:['小型内野用でセカンドを中心に守る選手向け','軽量感があり足運びのストレスになりにくい']},
+  'TOP465型': {type:'内野手用', size:'約28.5cm', notes:['内野ならどこでも守れる捕球面の広いモデル','軽量感があり足運びのストレスになりにくい']},
+  'TOP65型':  {type:'内野手用', size:'約29.0cm', notes:['大きめ内野用で打球対応への不安がないモデル','軽量感があり足運びのストレスになりにくい']},
+  'TOP1型':   {type:'投手用',   size:'約30.0cm', notes:['横型投手用で強く握り込めるモデル']},
+  'TOP11型':  {type:'投手用',   size:'約29.0cm', notes:['縦型投手用で守備重視の投手へオススメ']},
+  'TOP8型':   {type:'外野手用', size:'約32.0cm', notes:['ガッツリ掴みたい大きめグラブが好きな選手向け','小指2本入れ対応']},
+  'TOP8S型':  {type:'外野手用', size:'約31.0cm', notes:['少し小型でも捕球面は広く持ち返しやすいモデル','小指2本入れ対応']},
   // 国内グラブと同じ型番（説明も国内グラブと同じ）
   '櫻庭型':   {type:'内野手用', size:'約29.2cm', notes:['シングルプレイヤー向け','小指が少し短い']},
   '松本型':   {type:'外野手用', size:'約32.5cm', notes:['親指と小指がフレア、ポケット深め','小指2本・5本入れ両対応']},
