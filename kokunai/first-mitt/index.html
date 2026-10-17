@@ -670,8 +670,8 @@ function refreshGradeLabels() {
 }
 const MODEL_INFO = {
   // 国内工場はモデル-サイズを表記しない（2026-08-15ユーザー確定）
-  'Fミット': {type:'一塁手用ファーストミット', size:'', notes:['標準のファーストミット']},
-  'YT型PRO': {type:'一塁手用ファーストミット', size:'', notes:['中型〜大型','芯材：硬め厚め','ポケット深め','エキストラレース標準装備']},
+  'Fミット': {type:'一塁手用ファーストミット', size:'約32.5cm', notes:['標準のファーストミット']},
+  'YT型PRO': {type:'一塁手用ファーストミット', size:'約33.0cm', notes:['中型〜大型','芯材：硬め厚め','ポケット深め','エキストラレース標準装備']},
 };
 // YT型はオーダー用紙のオプション欄が Extra Lace になる（Fミットは「-」）
 const EXTRA_LACE_MODELS = new Set(['YT型PRO']);
@@ -1404,7 +1404,7 @@ function buildOrderLines() {
   lines.push(`投げ手: ${throwHandVal || '未選択'}`);
   lines.push(`使用区分: ${usageVal || '未選択'}`);
   lines.push(`グレード: ${gradeVal || '未選択'}`);
-  lines.push(`型番: ${selectedModel || '未選択'}`);
+  lines.push(`型番: ${selectedModel || '未選択'}${(MODEL_INFO[selectedModel] || {}).size ? '／' + MODEL_INFO[selectedModel].size : ''}`);
   lines.push(`エキストラレース: ${EXTRA_LACE_MODELS.has(selectedModel) ? 'あり（YT型PROは標準装備）' : 'なし'}`);
   const OPT_IDS_COPY = ['fingercover','fingerpad'];
   PARTS.forEach(p => {
