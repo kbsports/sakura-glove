@@ -650,8 +650,8 @@ let gradeVal  = '';   // 本体グレード（基本価格）
 // 本体価格は Fミット・YT型とも同額（海外工場）
 const GRADE_PRICE = { 'ゴム・軟式ミット':46200, '革・硬式ミット':60500 };
 const MODEL_INFO = {
-  'Fミット': {type:'一塁手用ファーストミット', size:'', msize:'003-12.75', notes:['標準のファーストミット']},
-  'YT型':  {type:'一塁手用ファーストミット', size:'', msize:'003-13.25', notes:['大型','芯材：硬め厚め','ポケット深め','エキストラレース標準装備']},
+  'Fミット': {type:'一塁手用ファーストミット', size:'約32.5cm', msize:'003-12.75', notes:['標準のファーストミット']},
+  'YT型':  {type:'一塁手用ファーストミット', size:'約33.5cm', msize:'003-13.25', notes:['大型','芯材：硬め厚め','ポケット深め','エキストラレース標準装備']},
 };
 // YT型はオーダー用紙のオプション欄が Extra Lace になる（Fミットは「-」）
 const EXTRA_LACE_MODELS = new Set(['YT型']);
@@ -1381,7 +1381,7 @@ function buildOrderLines() {
   lines.push(`投げ手: ${throwHandVal || '未選択'}`);
   lines.push(`使用区分: ${usageVal || '未選択'}`);
   lines.push(`グレード: ${gradeVal || '未選択'}`);
-  lines.push(`型番: ${selectedModel || '未選択'}`);
+  lines.push(`型番: ${selectedModel || '未選択'}${(MODEL_INFO[selectedModel] || {}).size ? '／' + MODEL_INFO[selectedModel].size : ''}`);
   lines.push(`モデル-サイズ: ${(MODEL_INFO[selectedModel]||{}).msize || '未選択'}`);
   lines.push(`エキストラレース: ${EXTRA_LACE_MODELS.has(selectedModel) ? 'あり（YT型は標準装備）' : 'なし'}`);
   const OPT_IDS_COPY = ['fingercover','fingerpad'];
