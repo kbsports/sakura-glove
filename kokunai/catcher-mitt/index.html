@@ -384,22 +384,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       placeholder="ご要望・ご質問などご自由にご記入ください"
       oninput="embrNote=this.value"></textarea>
 
-    <div class="sel-group-label">親指付根 丸抜き</div>
-    <div class="part-row"><span class="part-nm">土台カラー</span>
-      <select class="part-sel" id="maru-base" onchange="setEmbrField('maruBase', this)"><option value="">— 選択 —</option></select>
-      <span class="swatch" id="sw-maru-base"></span>
-    </div>
-    <div class="part-row"><span class="part-nm">土台フチカラー</span>
-      <select class="part-sel" id="maru-edge" onchange="setEmbrField('maruEdge', this)"><option value="">— 選択 —</option></select>
-      <span class="swatch" id="sw-maru-edge"></span>
-    </div>
-    <div class="part-row"><span class="part-nm">番号カラー</span>
-      <select class="part-sel" id="maru-num-color" onchange="setEmbrField('maruNumColor', this)"><option value="">— 選択 —</option></select>
-      <span class="swatch" id="sw-maru-num-color"></span>
-    </div>
-    <div class="part-row"><span class="part-nm">番号</span>
-      <input type="text" id="maru-number" class="part-sel" placeholder="例: 10（選択・記入）" oninput="setEmbrField('maruNumber', this)">
-    </div>
+    <!-- 丸抜きは国内工場では不可のため削除（2026-10-18 ユーザー指定） -->
   </div>
 
   <!-- ===== 右：指定図＋指定表 ===== -->
@@ -1418,11 +1403,6 @@ function calcPrice() {
     if (e.fkType || e.fkColor) add(`刺繍フチ／カゲ加工（${p.label}）`, 3300);
   });
 
-  // 丸抜き
-  if (EMBR.maruBase || EMBR.maruEdge || EMBR.maruNumColor || EMBR.maruNumber) {
-    add('親指付根 丸抜き', 3300);
-  }
-
   const notes = [];
   if (embrOtherPlace || embrOtherText || embrOtherColor) {
     notes.push('「その他」の刺繍は価格未算入です。KBスポーツへ別途ご相談ください。');
@@ -1529,11 +1509,6 @@ function buildOrderLines() {
   if (embrOtherFont)  otherParts.push(`書体 ${embrOtherFont}`);
   if (embrOtherColor) otherParts.push(`カラー ${embrOtherColor}`);
   lines.push(`その他: ${otherParts.length ? otherParts.join('、') : 'なし'}`);
-  lines.push('\n■ 親指付根 丸抜き');
-  lines.push(`土台カラー: ${EMBR.maruBase || '未選択'}`);
-  lines.push(`土台フチカラー: ${EMBR.maruEdge || '未選択'}`);
-  lines.push(`番号カラー: ${EMBR.maruNumColor || '未選択'}`);
-  lines.push(`番号: ${EMBR.maruNumber || '未記入'}`);
   lines.push(`\n■ 備考\n${embrNote || 'なし'}`);
   const { items: priceItems, total: priceTotal, notes: priceNotes } = calcPrice();
   lines.push('\n■ 概算お見積り（税込）');
