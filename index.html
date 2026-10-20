@@ -678,6 +678,7 @@ const BODY_COLORS = [
   {n:'スカイブルー',  hex:'#5BB5E8'},
   {n:'マルーン',      hex:'#6B1E2D'},
   {n:'チェストナット',hex:'#7B4010'},
+  {n:'光沢ゴールド',hex:'#D4AF37'},   // 2026-10-18 追加（本体・ヘリ革・指かけなど本体の革で選べる）
 ];
 
 const LACE_COLORS = [
@@ -2032,8 +2033,8 @@ function drawMaru(d0) {
   if (!cv || !cv.width) return;
   const bg = _embrBg('thumbin');   // 土台カラー未選択なら革の色をそのまま見せる
   const hexOf = function(set, n) { const c = n ? set.find(function(x) { return x.n === n; }) : null; return c ? c.hex : null; };
-  const base = hexOf(BODY_COLORS, EMBR.maruBase) || bg;
-  const edge = hexOf(BODY_COLORS, EMBR.maruEdge) || bg;
+  const base = hexOf(THREAD_COLORS, EMBR.maruBase) || bg;
+  const edge = hexOf(THREAD_COLORS, EMBR.maruEdge) || bg;
   const num  = hexOf(THREAD_COLORS, EMBR.maruNumColor) || '#111111';
   const R = d.w * cv.width / 2;
   const ctx = cv.getContext('2d');
@@ -2176,8 +2177,8 @@ function populateEmbrColors() {
     fill(`ep-${p.key}-mono`,    THREAD_COLORS);  // 単色カラー（糸）
     fill(`ep-${p.key}-fkcolor`, THREAD_COLORS);  // フチ/カゲカラー（糸）
   });
-  fill('maru-base',     BODY_COLORS);    // 土台（革）
-  fill('maru-edge',     BODY_COLORS);    // 土台フチ（革）
+  fill('maru-base',     THREAD_COLORS);  // 土台（刺繍糸。2026-10-18 革→糸）
+  fill('maru-edge',     THREAD_COLORS);  // 土台フチ（刺繍糸。2026-10-18 革→糸）
   fill('maru-num-color',THREAD_COLORS);  // 番号（糸）
 }
 
@@ -2238,8 +2239,8 @@ function setEmbrPlaceField(place, field, el) {
 
 // 丸抜きカラー系フィールドのスウォッチ定義
 const EMBR_SW = {
-  maruBase:     {sw:'sw-maru-base',     set:BODY_COLORS},
-  maruEdge:     {sw:'sw-maru-edge',     set:BODY_COLORS},
+  maruBase:     {sw:'sw-maru-base',     set:THREAD_COLORS},
+  maruEdge:     {sw:'sw-maru-edge',     set:THREAD_COLORS},
   maruNumColor: {sw:'sw-maru-num-color',set:THREAD_COLORS},
 };
 
