@@ -349,6 +349,12 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
       <select class="part-sel" id="sakura-web-cut-color" onchange="setSakuraWebCutColor(this)"><option value="">— 選択 —</option></select>
       <span class="swatch" id="sw-sakura-web-cut"></span>
     </div>
+    <div class="part-row" id="web11-palm-row" style="display:none">
+      <span class="part-nm">#11 捕球面側</span>
+      <select class="part-sel" id="web11-palm-color" onchange="setWeb11PalmColor(this)"><option value="">— 選択 —</option></select>
+      <span class="swatch" id="sw-web11-palm"></span>
+    </div>
+    <div class="model-help" id="web11-help" style="display:none">※#11ウエブは、上の「ウエブ」が背面側（表の革）、「#11 捕球面側」がウエブの裏側の革（切り抜きから見えるスエード面）の色です。</div>
 
     <!-- ===== 刺繍仕様 ===== -->
     <div class="sel-group-label">刺繍仕様</div>
@@ -787,6 +793,7 @@ function renderUsageOptions() {
 let sakuraBack = 'なし';
 let sakuraBackColor = '';
 let sakuraWebCutColor = '';  // 桜ウエブ「切り抜き」革色
+let web11PalmColor = '';     // #11ウエブ「捕球面側」革色（切り抜きから見える裏側。2026-10-23）
 let thumbUnified = 'なし';   // 親指一体型（親指内側とベルトが一体）
 const SAKURA_BACK_MODELS = new Set(['内野1型','内野2型','内野3型','内野5型','投手1型','外野1型','外野2型']);
 const MODEL_INFO = {
@@ -917,6 +924,17 @@ function setSakuraBackColor(sel) {
   const color = BODY_COLORS.find(c => c.n === sakuraBackColor);
   if (_fillCanvas) drawGlove();
   if (sw) sw.style.background = color ? color.hex : '';
+  updatePrice();
+}
+
+/* #11ウエブ「捕球面側」革色（#11ウエブ選択時のみ有効） */
+function setWeb11PalmColor(sel) {
+  web11PalmColor = sel.value;
+  const sw = document.getElementById('sw-web11-palm');
+  const color = BODY_COLORS.find(c => c.n === web11PalmColor);
+  if (sw) sw.style.background = color ? color.hex : '';
+  renderWebShape();
+  if (_fillCanvas) drawGlove();
   updatePrice();
 }
 
@@ -1472,6 +1490,10 @@ function loadPalmView() {
 
 /* 捕球面のパーツ色。個別に選んでいなければ「全体」の色（縫い糸だけは除く） */
 function palmColorOf(id) {
+  if (id === 'web' && web11PalmColor && currentWebShapeFile && (WEB_BY_FILE[currentWebShapeFile] || {}).palmSide) {
+    const c = BODY_COLORS.find(function(c) { return c.n === web11PalmColor; });
+    if (c) return c.hex;
+  }
   const name = S[id];
   if (name) {
     const p = PARTS.find(function(x) { return x.id === id; });
@@ -1848,6 +1870,15 @@ function init() {
       sakuraWebCutColorSel.appendChild(op);
     });
   }
+  const web11PalmSel = document.getElementById('web11-palm-color');
+  if (web11PalmSel) {
+    BODY_COLORS.forEach(c => {
+      const op = document.createElement('option');
+      op.value = c.n;
+      op.textContent = c.n;
+      web11PalmSel.appendChild(op);
+    });
+  }
   buildWebShapeOptions('');   // ウエブ形状プルダウンを初期構築（すべて表示）
   populateEmbrColors();       // 刺繍・丸抜きカラーを構築
   renderSpec();
@@ -1979,7 +2010,7 @@ const EMBR_PLACES = {
 const EMBR_DRAW = [
   {key:'thumbin', canvas:'glove-canvas', cx:0.6072, cy:0.674, w:0.1, h:0.035, rot:-46.5,
    alt:{cx:0.6427, cy:0.6237, w:0.097, h:0.034}},   // alt＝丸抜きを入れたとき、丸に重ならないよう逃がす位置   // g_thumb
-  {key:'pinkyin', canvas:'glove-canvas', cx:0.2674, cy:0.5582, w:0.06, h:0.03, rot:-88.5},   // g_pinky
+  {key:'pinkyin', canvas:'glove-canvas', cx:0.2674, cy:0.5582, w:0.06, h:0.03, rot:91.5},   // g_pinky（2026-10-23 180°回転：文字の下を小指外側へ）
   {key:'hiraura', canvas:'glove-canvas', cx:0.3894, cy:0.6952, w:0.14, h:0.035, rot:0},   // g_hira_front
 ];
 const EMBR_FONTS = {
@@ -2068,7 +2099,7 @@ function drawMaru(d0) {
    親指内＝横から見た図／小指内・平裏＝小指側から見た図。桜バックのときは親指内は入力できない */
 const EMBR_DRAW_TU = [
   {key:'thumbin', canvas:'side-canvas',  cx:0.5546, cy:0.6642, w:0.2239, h:0.07,   rot:5},      // g_thumb_tu
-  {key:'pinkyin', canvas:'pinky-canvas', cx:0.2726, cy:0.4959, w:0.1402, h:0.0567, rot:-81.5},  // g_pinky_tu
+  {key:'pinkyin', canvas:'pinky-canvas', cx:0.2726, cy:0.4959, w:0.1402, h:0.0567, rot:98.5},  // g_pinky_tu（2026-10-23 180°回転）
   {key:'hiraura', canvas:'pinky-canvas', cx:0.4271, cy:0.7298, w:0.2617, h:0.0521, rot:0},      // g_hira_pk
 ];
 function drawEmbrTU(canvasId) {
@@ -2289,7 +2320,7 @@ const WEB_SHAPES = [
   {file:'ウエブ/デジタルウエブ投手.jpg',      label:'デジタルウエブ投手',     cat:'デジタル系',         pos:['投','内']},
   {file:'ウエブ/桜ウエブ.jpg',                label:'桜ウエブ',              cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true, cutColor:true},
   {file:'ウエブ/バスケットA+桜吹雪（桜吹雪ウエブ）.png', label:'桜吹雪ウエブ',   cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true},
-  {file:'ウエブ/11ウエブ.jpg',              label:'#11ウエブ',             cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true},   // 2026-10-23 追加（写真なので色で染めない）
+  {file:'ウエブ/11ウエブ.jpg',              label:'#11ウエブ',             cat:'桜オリジナル',       pos:['投'], fee:6600, noTint:true, palmSide:true},   // 2026-10-23 追加（写真なので色で染めない）
 ];
 const WEB_BY_FILE = {};
 WEB_SHAPES.forEach(w => { WEB_BY_FILE[w.file] = w; });
@@ -2347,6 +2378,22 @@ function updateSakuraWebCutColorState() {
     const sw = document.getElementById('sw-sakura-web-cut');
     if (sw) sw.style.background = '';
   }
+  const on11 = !!(data && data.palmSide);
+  const row11 = document.getElementById('web11-palm-row');
+  const sel11 = document.getElementById('web11-palm-color');
+  const help11 = document.getElementById('web11-help');
+  if (row11) row11.style.display = on11 ? '' : 'none';
+  if (help11) help11.style.display = on11 ? '' : 'none';
+  if (sel11) sel11.disabled = !on11;
+  if (!on11 && web11PalmColor) {
+    web11PalmColor = '';
+    if (sel11) sel11.value = '';
+    const sw = document.getElementById('sw-web11-palm');
+    if (sw) sw.style.background = '';
+  }
+  const webSel = document.querySelector('select[data-part="web"]');
+  const webNm = webSel ? webSel.closest('.part-row').querySelector('.part-nm') : null;
+  if (webNm) webNm.textContent = on11 ? 'ウエブ（背面側）' : 'ウエブ';
 }
 
 /* カード描画：形状＋「ウエブ」カラーを連動して染める */
@@ -2374,7 +2421,8 @@ function renderWebShape() {
   const data = WEB_BY_FILE[path];
   nm.textContent  = data ? data.label : '';
   fee.textContent = (data && data.fee) ? `オプション料金 別途 ¥${data.fee.toLocaleString()}（税込）` : '';
-  if (cc) cc.textContent = (data && data.cutColor) ? `切り抜きカラー: ${sakuraWebCutColor || '未選択'}` : '';
+  if (cc) cc.textContent = (data && data.cutColor) ? `切り抜きカラー: ${sakuraWebCutColor || '未選択'}`
+                        : (data && data.palmSide) ? `背面側: ${S['web'] || '未選択'}／捕球面側: ${web11PalmColor || '未選択'}` : '';
   card.style.display = '';
 
   const enc = encodeURI(path);
@@ -2494,7 +2542,7 @@ function renderSpec() {
 /* ================================================================
    概算お見積り価格
    ※ 画像の価格表のうち、本ツールで選択できる項目のみ自動算出。
-     さくぼー／スマイリー／芯材厚め変更／指リング／特殊革／#11ウエブ／
+     さくぼー／スマイリー／芯材厚め変更／指リング／特殊革／
      限定仕様ウェブ／組み合わせセットは選択肢がないため対象外（要相談として注記）。
 ================================================================ */
 // 本体カラー3色目以降のカウント対象：革色パーツ全体から「はみ出し」「ヘリ革」を除く
@@ -2513,6 +2561,7 @@ function calcPrice() {
   BODY_COLOR_PART_IDS.forEach(id => { if (S[id]) usedColors.add(S[id]); });
   if (sakuraBackColor) usedColors.add(sakuraBackColor);
   if (sakuraWebCutColor) usedColors.add(sakuraWebCutColor);
+  if (web11PalmColor) usedColors.add(web11PalmColor);
   const extraColors = Math.max(0, usedColors.size - 2);
   if (extraColors > 0) add(`本体カラー${extraColors}色分（3色目以降）`, extraColors * 3300);
 
@@ -2540,7 +2589,7 @@ function calcPrice() {
   if (embrOtherPlace || embrOtherText || embrOtherColor) {
     notes.push('「その他」の刺繍は価格未算入です。KBスポーツへ別途ご相談ください。');
   }
-  notes.push('さくぼー／スマイリー／芯材厚め変更／指リング／特殊革／#11ウエブ／限定仕様ウェブ／組み合わせセットは本ツールでは算出できません。ご希望の場合はKBスポーツへ別途ご相談ください。');
+  notes.push('さくぼー／スマイリー／芯材厚め変更／指リング／特殊革／限定仕様ウェブ／組み合わせセットは本ツールでは算出できません。ご希望の場合はKBスポーツへ別途ご相談ください。');
 
   return { items, total, notes };
 }
@@ -2621,6 +2670,10 @@ function buildOrderLines() {
   if (wshape) {
     lines.push(`ウエブ形状: ${wshape.label}${wshape.fee ? `（オプション +¥${wshape.fee.toLocaleString()}税込）` : ''}`);
     if (wshape.cutColor) lines.push(`　切り抜きカラー: ${sakuraWebCutColor || '未選択'}`);
+    if (wshape.palmSide) {
+      lines.push(`　背面側カラー: ${S['web'] || (S['body'] ? S['body'] + '（全体）' : '未選択')}`);
+      lines.push(`　捕球面側カラー: ${web11PalmColor || '未選択'}`);
+    }
   } else {
     lines.push(`ウエブ形状: 未選択`);
   }
@@ -2945,7 +2998,7 @@ function triggerDownload(url, filename) {
 // 現在の全選択内容をオブジェクト化（空の項目は省いて短く）
 function getState() {
   const st = { v:1, on:orderNo, th:throwHandVal, cs:coreStitchVal, td:tojiDirVal, mt:moutonVal, gr:gradeVal, us:usageVal, m:selectedModel, sb:sakuraBack, sbc:sakuraBackColor,
-    tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor,
+    tu:thumbUnified, lg:logoVal, lgc:{}, S:{}, O:{}, wt:wtypeVal, ws:currentWebShapeFile, wcc:sakuraWebCutColor, w11p:web11PalmColor,
     ep:{}, eo:[embrOtherPlace, embrOtherText, embrOtherColor, embrOtherFont], en:embrNote, mr:{} };
   PARTS.forEach(p => { if (S[p.id]) st.S[p.id] = S[p.id]; });
   ['web','fingerpad','fingercover'].forEach(k => { if (OPT[k]) st.O[k] = OPT[k]; });
@@ -3019,6 +3072,7 @@ function applyState(st) {
   // ウエブ形状
   if (st.ws) setSel('web-shape-sel', st.ws, setWebShape);
   if (st.wcc) setSel('sakura-web-cut-color', st.wcc, el => { if (!el.disabled) setSakuraWebCutColor(el); });
+  if (st.w11p) setSel('web11-palm-color', st.w11p, el => { if (!el.disabled) setWeb11PalmColor(el); });
   // 刺繍箇所
   if (st.ep) EMBR_PLACE_DEFS.forEach(p => {
     const a = st.ep[p.key]; if (!a) return;
