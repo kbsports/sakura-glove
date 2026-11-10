@@ -156,6 +156,17 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
 .done-no{font-size:1.35em;font-weight:bold;color:#7a0000;letter-spacing:.06em;text-align:center;margin:10px 0;line-height:1.4}
 /* PDFシート（画面外でレンダリング） */
 #pdf-sheet{position:fixed;left:-9999px;top:0;width:720px;background:#fff;color:#1e1e1e;padding:28px;font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif}
+
+ /* 刺繍の文字数ガイド（2026-11-10） */
+ .embr-rule{font-size:.74em;color:#5a3b00;background:#fff8e6;border:1px solid #f0d9a0;border-radius:8px;padding:7px 9px;margin:4px 0 8px;line-height:1.7}
+ .embr-rule b{color:#7a0000}
+ .embr-rule .eg{display:inline-flex;gap:2px;vertical-align:middle;margin:0 4px}
+ .embr-rule .eg i,.embr-count .cells i{display:inline-block;width:11px;height:11px;border:1px solid #c9a227;border-radius:2px;background:#fff}
+ .embr-rule .eg i.on,.embr-count .cells i.on{background:#c9a227}
+ .embr-count{font-size:.72em;color:#666;margin:-2px 0 6px 0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+ .embr-count .cells{display:inline-flex;gap:2px}
+ .embr-count.over{color:#c00000;font-weight:bold}
+ .embr-count .cells i.ex{background:#e04040;border-color:#c00000}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -356,12 +367,17 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
 
     <!-- ===== 刺繍仕様 ===== -->
     <div class="sel-group-label">刺繍仕様</div>
+    <div class="embr-rule">📏 刺繍の文字数は<b>1段につき</b>、
+      <b>漢字・かな 6文字</b><span class="eg"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>／
+      <b>アルファベット 7文字</b><span class="eg"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>までです。<br>
+      入力するとマス目が塗られます。マス目からはみ出す（赤になる）ときは、文字を減らしてください。</div>
 
     <!-- ① 刺繍箇所（箇所ごとに 刺繍文字／単色カラー／フチ・カゲカラー） -->
     <div class="sel-group-label">平裏</div>
     <div class="part-row"><span class="part-nm">刺繍文字</span>
       <input type="text" id="ep-hiraura-text" class="part-sel" placeholder="例: SAKURA" oninput="setEmbrPlaceField('hiraura','text',this)">
     </div>
+    <div class="embr-count" data-input="ep-hiraura-text" data-label="平裏"></div>
     <div class="part-row"><span class="part-nm">書体</span>
       <select class="part-sel" id="ep-hiraura-font" onchange="setEmbrPlaceField('hiraura','font',this)">
         <option value="">— 選択 —</option><option value="行書体">行書体</option><option value="楷書体">楷書体</option><option value="ブロック体">ブロック体</option><option value="筆記体">筆記体</option>
@@ -383,6 +399,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">刺繍文字</span>
       <input type="text" id="ep-thumbin-text" class="part-sel" placeholder="例: SAKURA" oninput="setEmbrPlaceField('thumbin','text',this)">
     </div>
+    <div class="embr-count" data-input="ep-thumbin-text" data-label="親指内"></div>
     <div class="part-row"><span class="part-nm">書体</span>
       <select class="part-sel" id="ep-thumbin-font" onchange="setEmbrPlaceField('thumbin','font',this)">
         <option value="">— 選択 —</option><option value="行書体">行書体</option><option value="楷書体">楷書体</option><option value="ブロック体">ブロック体</option><option value="筆記体">筆記体</option>
@@ -404,6 +421,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">刺繍文字</span>
       <input type="text" id="ep-pinkyin-text" class="part-sel" placeholder="例: SAKURA" oninput="setEmbrPlaceField('pinkyin','text',this)">
     </div>
+    <div class="embr-count" data-input="ep-pinkyin-text" data-label="小指内"></div>
     <div class="part-row"><span class="part-nm">書体</span>
       <select class="part-sel" id="ep-pinkyin-font" onchange="setEmbrPlaceField('pinkyin','font',this)">
         <option value="">— 選択 —</option><option value="行書体">行書体</option><option value="楷書体">楷書体</option><option value="ブロック体">ブロック体</option><option value="筆記体">筆記体</option>
@@ -428,6 +446,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Yu Gothic','Meiryo',sans-serif;back
     <div class="part-row"><span class="part-nm">刺繍文字</span>
       <input type="text" id="ep-other-text" class="part-sel" placeholder="例: SAKURA" oninput="embrOtherText=this.value;updatePrice()">
     </div>
+    <div class="embr-count" data-input="ep-other-text" data-label="その他"></div>
     <div class="part-row"><span class="part-nm">書体</span>
       <select class="part-sel" id="ep-other-font" onchange="embrOtherFont=this.value">
         <option value="">— 選択 —</option><option value="行書体">行書体</option><option value="楷書体">楷書体</option><option value="ブロック体">ブロック体</option><option value="筆記体">筆記体</option>
@@ -1910,7 +1929,42 @@ function calcPrice() {
   return { items, total, notes };
 }
 
+/* 刺繍の文字数（2026-11-10）：1段につき 漢字・かな6文字／アルファベット7文字まで。空白は数えない */
+function embrLimitOf(text) {
+  const t = String(text || '').replace(/\s/g, '');
+  const wa = /[^\x00-\x7F]/.test(t);   // 漢字・かな・全角が入っていれば和文
+  return { count: Array.from(t).length, limit: wa ? 6 : 7, kind: wa ? '漢字・かな' : 'アルファベット' };
+}
+function embrCountUpdate() {
+  document.querySelectorAll('.embr-count').forEach(function(box) {
+    const inp = document.getElementById(box.dataset.input);
+    if (!inp) return;
+    const r = embrLimitOf(inp.value);
+    const n = Math.max(r.limit, r.count);
+    let cells = '';
+    for (let i = 0; i < n; i++) cells += '<i class="' + (i < Math.min(r.count, r.limit) ? 'on' : (i < r.count ? 'ex' : '')) + '"></i>';   // 決まりの文字数まで＝金、はみ出し＝赤
+    const over = r.count > r.limit;
+    box.classList.toggle('over', over);
+    box.innerHTML = '<span class="cells">' + cells + '</span><span>' +
+      (r.count ? (over ? '⚠ ' + r.count + '文字です。' + r.kind + 'は1段' + r.limit + '文字までにしてください'
+                       : 'いま' + r.count + '文字／' + r.kind + 'は' + r.limit + '文字まで')
+               : '漢字・かなは6文字、アルファベットは7文字まで') + '</span>';
+  });
+}
+function embrOverInputs() {
+  const out = [];
+  document.querySelectorAll('.embr-count').forEach(function(box) {
+    const inp = document.getElementById(box.dataset.input);
+    if (!inp) return;
+    const r = embrLimitOf(inp.value);
+    if (r.count > r.limit) out.push({ inp: inp, label: box.dataset.label, r: r });
+  });
+  return out;
+}
+document.addEventListener('input', function(e) { if (e.target && /^ep-.*-text$/.test(e.target.id || '')) embrCountUpdate(); });
+
 function updatePrice() {
+  if (typeof embrCountUpdate === 'function') embrCountUpdate();
   const body    = document.getElementById('price-body');
   const totalEl = document.getElementById('price-total');
   const noteEl  = document.getElementById('price-note');
@@ -2062,6 +2116,16 @@ function escapeHtml(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&
 
 // 最終確認モーダルを開く（毎回モーダル内容を組み直して古い状態を残さない）
 function openConfirm() {
+  // 刺繍の文字数（1段につき 漢字・かな6文字／アルファベット7文字まで）
+  if (typeof embrOverInputs === 'function') {
+    const ov = embrOverInputs();
+    if (ov.length) {
+      alert('刺繍の文字数が多すぎます。\n' + ov.map(function(o) { return '・' + o.label + '：' + o.r.count + '文字（' + o.r.kind + 'は1段' + o.r.limit + '文字まで）'; }).join('\n'));
+      ov[0].inp.scrollIntoView({behavior:'smooth', block:'center'});
+      ov[0].inp.focus();
+      return;
+    }
+  }
   if (!selectedModel) { alert('型番を選択してください。'); return; }
   setCust();
   const missing = [];
